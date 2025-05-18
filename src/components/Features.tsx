@@ -65,9 +65,6 @@ const Features = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-dark">
             Platform <span className="text-secondary">Features</span>
           </h2>
-          <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
-            SnipeOnBelieve combines powerful tools to give you a decisive edge on the BelieveApp launchpad.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -78,12 +75,6 @@ const Features = () => {
               <p className="text-gray-600">{feature.description}</p>
             </div>
           ))}
-        </div>
-        
-        <div className="mt-16 text-center">
-          <button className="btn-primary">
-            Explore All Features
-          </button>
         </div>
       </div>
     </section>

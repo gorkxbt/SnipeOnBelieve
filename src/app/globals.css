@@ -1,0 +1,29 @@
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  --primary-color: #ffffff;
+  --secondary-color: #21d55a;
+  --dark-color: #111827;
+  --light-color: #f9fafb;
+}
+
+.text-secondary {
+  color: #21d55a;
+}
+
+.bg-secondary {
+  background-color: #21d55a;
+}
+
+.btn-primary {
+  @apply bg-[#21d55a] text-white px-6 py-3 rounded-full font-medium hover:bg-opacity-90 transition-all;
+}
+
+.btn-secondary {
+  @apply bg-white text-dark border border-gray-200 px-6 py-3 rounded-full font-medium hover:border-[#21d55a] hover:text-[#21d55a] transition-all;
+}
+
+.nav-link {
+  @apply text-gray-600 hover:text-[#21d55a] font-medium;
+} 

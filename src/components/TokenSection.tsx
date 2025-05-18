@@ -38,9 +38,6 @@ const TokenSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-dark">
             $SOB <span className="text-secondary">Token</span>
           </h2>
-          <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
-            The native utility token powering the SnipeOnBelieve platform on Solana.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -78,8 +75,22 @@ const TokenSection = () => {
               </div>
               
               <div className="flex justify-center space-x-4">
-                <button className="btn-primary">Buy $SOB</button>
-                <button className="btn-secondary">Add to Wallet</button>
+                <a 
+                  href="https://raydium.io/swap/" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="btn-primary"
+                >
+                  Buy $SOB
+                </a>
+                <a 
+                  href="https://solscan.io"
+                  target="_blank" 
+                  rel="noopener noreferrer"  
+                  className="btn-secondary"
+                >
+                  View on Solscan
+                </a>
               </div>
             </div>
           </div>
@@ -102,9 +113,6 @@ const TokenSection = () => {
             
             <div className="mt-8 bg-white rounded-xl p-5 shadow-sm border border-gray-100">
               <h4 className="text-lg font-medium text-dark mb-2">Tokenomics</h4>
-              <p className="text-gray-600 mb-4">
-                The $SOB token is designed with a balanced distribution to ensure long-term sustainability and value for holders.
-              </p>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gray-50 rounded p-3">
                   <div className="text-sm text-gray-500">Platform Development</div>

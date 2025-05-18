@@ -97,9 +97,6 @@ const Dashboard = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-dark">
             Dashboard <span className="text-secondary">Preview</span>
           </h2>
-          <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
-            Get a glimpse of our powerful dashboard, your command center for all activity on BelieveApp.
-          </p>
         </div>
         
         {!wallet.connected ? (
@@ -108,7 +105,9 @@ const Dashboard = () => {
             <p className="text-gray-600 mb-6">
               Connect your Solana wallet to access the dashboard and sniping tools.
             </p>
-            <button className="btn-primary">Connect Wallet</button>
+            <button className="btn-primary" onClick={() => window.dispatchEvent(new Event('wallet-connect-click'))}>
+              Connect Wallet
+            </button>
           </div>
         ) : isLoading ? (
           <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 text-center">
@@ -123,7 +122,9 @@ const Dashboard = () => {
             <p className="text-gray-600 mb-6">
               You need at least 1,000 $SOB tokens to access the dashboard and sniping tools.
             </p>
-            <button className="btn-primary">Buy $SOB Tokens</button>
+            <a href="https://raydium.io/swap/" target="_blank" rel="noopener noreferrer" className="btn-primary">
+              Buy $SOB Tokens
+            </a>
           </div>
         ) : (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -147,6 +148,16 @@ const Dashboard = () => {
                 onClick={() => setActiveTab('graduated')}
               >
                 Graduated Coins
+              </button>
+              <button
+                className={`px-6 py-3 font-medium ${
+                  activeTab === 'sniper'
+                    ? 'text-secondary border-b-2 border-secondary'
+                    : 'text-gray-500 hover:text-gray-800'
+                }`}
+                onClick={() => setActiveTab('sniper')}
+              >
+                Configure Sniper
               </button>
             </div>
             
@@ -225,7 +236,10 @@ const Dashboard = () => {
                           <td className="py-4 text-dark">{token.holders}</td>
                           <td className="py-4 text-dark">{token.xFollowers}</td>
                           <td className="py-4">
-                            <button className="bg-secondary text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-all">
+                            <button 
+                              className="bg-secondary text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-all"
+                              onClick={() => setActiveTab('sniper')}
+                            >
                               Snipe
                             </button>
                           </td>
@@ -271,9 +285,14 @@ const Dashboard = () => {
                         </td>
                         <td className="py-4 text-dark">{token.marketCap}</td>
                         <td className="py-4">
-                          <button className="bg-secondary text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-all">
+                          <a 
+                            href={`https://raydium.io/swap/?inputCurrency=SOL&outputCurrency=${token.ticker.substring(1)}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="bg-secondary text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-all"
+                          >
                             Trade
-                          </button>
+                          </a>
                         </td>
                       </tr>
                     ))}
@@ -281,14 +300,68 @@ const Dashboard = () => {
                 </table>
               </div>
             )}
+            
+            {activeTab === 'sniper' && (
+              <div className="px-6 pb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="bg-gray-50 rounded-lg p-6">
+                    <h3 className="font-bold text-dark mb-4">X Account Monitoring</h3>
+                    <p className="text-gray-600 mb-4">Enter the handle of any X (Twitter) account. We will monitor this account for token deployment announcements or contract drops.</p>
+                    
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">X Account Handle</label>
+                      <div className="mt-1 relative rounded-md shadow-sm">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <span className="text-gray-500 sm:text-sm">@</span>
+                        </div>
+                        <input type="text" className="focus:ring-secondary focus:border-secondary block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md py-2 border" placeholder="solanaproject" />
+                      </div>
+                    </div>
+                    
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Amount to Snipe (SOL)</label>
+                      <input type="number" min="0.01" step="0.01" className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 rounded-md py-2 border" placeholder="0.1" />
+                    </div>
+                    
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Slippage Tolerance (%)</label>
+                      <input type="number" min="0.1" max="100" step="0.1" className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 rounded-md py-2 border" placeholder="2.5" />
+                    </div>
+                    
+                    <button className="w-full btn-primary">Enable Monitoring</button>
+                  </div>
+                  
+                  <div className="bg-gray-50 rounded-lg p-6">
+                    <h3 className="font-bold text-dark mb-4">Direct Snipe by Ticker or Name</h3>
+                    <p className="text-gray-600 mb-4">If you know the $ticker or name of an upcoming token, set up a snipe in advance. We'll monitor for the token's deployment.</p>
+                    
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Token Ticker or Name</label>
+                      <input type="text" className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 rounded-md py-2 border" placeholder="$EXAMPLE" />
+                    </div>
+                    
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Amount to Snipe (SOL)</label>
+                      <input type="number" min="0.01" step="0.01" className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 rounded-md py-2 border" placeholder="0.1" />
+                    </div>
+                    
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Slippage Tolerance (%)</label>
+                      <input type="number" min="0.1" max="100" step="0.1" className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 rounded-md py-2 border" placeholder="2.5" />
+                    </div>
+                    
+                    <button className="w-full btn-primary">Set Snipe</button>
+                  </div>
+                </div>
+                
+                <div className="mt-8 bg-white rounded-lg border border-gray-200 p-4">
+                  <h3 className="font-medium text-dark mb-2">Active Snipes</h3>
+                  <p className="text-gray-500 text-sm italic">You have no active snipes configured. Use the forms above to set up your first snipe.</p>
+                </div>
+              </div>
+            )}
           </div>
         )}
-        
-        <div className="mt-10 text-center">
-          <button className="btn-primary">
-            Access Full Dashboard
-          </button>
-        </div>
       </div>
     </section>
   );
