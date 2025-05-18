@@ -1,16 +1,9 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import ThemeToggle from './ThemeToggle';
 import { useTheme } from '@/lib/ThemeContext';
-
-// Dynamic import with error boundary fallback
-const WalletButton = dynamic(() => import('./WalletButton'), { 
-  ssr: false,
-  loading: () => <button className="btn-primary">Connect Wallet</button>
-});
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,12 +37,9 @@ const Header = () => {
             </Link>
           </nav>
           
-          {/* Connect Wallet Button and Theme Toggle */}
+          {/* Theme Toggle */}
           <div className="hidden md:flex items-center">
             <ThemeToggle />
-            <Suspense fallback={<button className="btn-primary ml-3">Connect Wallet</button>}>
-              <WalletButton />
-            </Suspense>
           </div>
           
           {/* Mobile Menu Button */}
@@ -105,11 +95,6 @@ const Header = () => {
               >
                 Analytics
               </Link>
-              <div className="pt-2">
-                <Suspense fallback={<button className="btn-primary w-full">Connect Wallet</button>}>
-                  <WalletButton />
-                </Suspense>
-              </div>
             </div>
           </div>
         )}
