@@ -1,6 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-const Features = () => {
+const Home = () => {
+  useEffect(() => {
+    // Simple animation for elements to fade in when they come into view
+    const animateOnScroll = () => {
+      const items = document.querySelectorAll('.animate-item');
+      
+      items.forEach(item => {
+        const rect = item.getBoundingClientRect();
+        const isVisible = (
+          rect.top >= 0 &&
+          rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+        );
+        
+        if (isVisible) {
+          item.classList.add('animated');
+        }
+      });
+    };
+    
+    window.addEventListener('scroll', animateOnScroll);
+    // Initial check for elements in view
+    setTimeout(animateOnScroll, 200);
+    
+    return () => window.removeEventListener('scroll', animateOnScroll);
+  }, []);
+
   const features = [
     {
       title: 'Real-Time Feed',
@@ -59,9 +84,18 @@ const Features = () => {
   ];
 
   return (
-    <section id="features" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+    <section id="features" className="py-20 bg-white relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute top-0 left-0 w-64 h-64 bg-secondary opacity-5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary opacity-5 rounded-full translate-x-1/3 translate-y-1/3"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="text-center mb-16 animate-item transition-all duration-700 opacity-0 translate-y-8">
+          <div className="inline-block mb-4">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary/10 text-secondary">
+              Powerful Features
+            </span>
+          </div>
           <h2 className="text-3xl md:text-4xl font-bold text-dark">
             Platform <span className="text-secondary">Features</span>
           </h2>
@@ -69,16 +103,28 @@ const Features = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:border-secondary transition-all">
-              <div className="text-secondary mb-4">{feature.icon}</div>
+            <div 
+              key={index} 
+              className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:border-secondary transition-all duration-300 hover:shadow-md animate-item opacity-0 translate-y-8"
+              style={{ transitionDelay: `${index * 100}ms` }}
+            >
+              <div className="text-secondary mb-4 p-3 rounded-full bg-secondary/10 inline-flex items-center justify-center">{feature.icon}</div>
               <h3 className="text-xl font-bold mb-2 text-dark">{feature.title}</h3>
               <p className="text-gray-600">{feature.description}</p>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Add CSS for animations */}
+      <style jsx>{`
+        .animate-item.animated {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      `}</style>
     </section>
   );
 };
 
-export default Features; 
+export default Home; 

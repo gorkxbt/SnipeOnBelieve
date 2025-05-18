@@ -27,10 +27,10 @@ const Header = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-6">
-            <Link href="#features" className="nav-link">
-              Features
+            <Link href="/#features" className="nav-link">
+              Home
             </Link>
-            <Link href="#dashboard" className="nav-link">
+            <Link href="/#dashboard" className="nav-link">
               Dashboard
             </Link>
             <Link href="/whitepaper" className="nav-link">
@@ -38,9 +38,6 @@ const Header = () => {
             </Link>
             <Link href="/analytics" className="nav-link">
               Analytics
-            </Link>
-            <Link href="#token" className="nav-link">
-              $SOB Token
             </Link>
           </nav>
           
@@ -76,14 +73,14 @@ const Header = () => {
           <div className="md:hidden py-4">
             <div className="flex flex-col space-y-4">
               <Link 
-                href="#features" 
+                href="/#features" 
                 onClick={() => setIsMenuOpen(false)}
                 className="nav-link"
               >
-                Features
+                Home
               </Link>
               <Link 
-                href="#dashboard" 
+                href="/#dashboard" 
                 onClick={() => setIsMenuOpen(false)}
                 className="nav-link"
               >
@@ -102,13 +99,6 @@ const Header = () => {
                 className="nav-link"
               >
                 Analytics
-              </Link>
-              <Link 
-                href="#token" 
-                onClick={() => setIsMenuOpen(false)}
-                className="nav-link"
-              >
-                $SOB Token
               </Link>
               <div className="pt-2">
                 <Suspense fallback={<button className="btn-primary w-full">Connect Wallet</button>}>

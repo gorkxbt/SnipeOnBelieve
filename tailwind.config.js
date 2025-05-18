@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       colors: {
         primary: '#FFFFFF',         // White background 
-        secondary: '#4F46E5',       // Indigo/purple accent
+        secondary: '#21d55a',       // Green accent
         accent: '#111827',          // Dark text color
         dark: '#111827',            // Text color
         light: '#FFFFFF',           // White

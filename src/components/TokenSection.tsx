@@ -21,8 +21,8 @@ const TokenSection = () => {
       ),
     },
     {
-      title: 'Governance Rights',
-      description: 'Token holders can vote on platform upgrades and new features via our governance portal.',
+      title: 'Bonding Curve',
+      description: '100% bonding curve model where token price increases with each purchase and decreases with each sale.',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
@@ -112,24 +112,17 @@ const TokenSection = () => {
             </div>
             
             <div className="mt-8 bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-              <h4 className="text-lg font-medium text-dark mb-2">Tokenomics</h4>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-50 rounded p-3">
-                  <div className="text-sm text-gray-500">Platform Development</div>
-                  <div className="text-xl font-bold text-dark">40%</div>
-                </div>
-                <div className="bg-gray-50 rounded p-3">
-                  <div className="text-sm text-gray-500">Community Rewards</div>
-                  <div className="text-xl font-bold text-dark">25%</div>
-                </div>
-                <div className="bg-gray-50 rounded p-3">
-                  <div className="text-sm text-gray-500">Team & Advisors</div>
-                  <div className="text-xl font-bold text-dark">15%</div>
-                </div>
-                <div className="bg-gray-50 rounded p-3">
-                  <div className="text-sm text-gray-500">Liquidity Pool</div>
-                  <div className="text-xl font-bold text-dark">20%</div>
-                </div>
+              <h4 className="text-lg font-medium text-dark mb-2">Tokenomics: 100% Bonding Curve</h4>
+              <div className="bg-gray-50 rounded p-4">
+                <p className="text-gray-600 mb-3">
+                  The $SOB token operates on a 100% bonding curve model, where:
+                </p>
+                <ul className="list-disc pl-5 space-y-2 text-gray-600">
+                  <li>Token price increases with each purchase</li>
+                  <li>Token price decreases with each sale</li>
+                  <li>Project team is paid from the 0.3% platform fees</li>
+                  <li>No pre-mint or team allocation</li>
+                </ul>
               </div>
             </div>
           </div>
