@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FC, ReactNode, useMemo } from 'react';
+import React, { FC, ReactNode, useMemo, useEffect, useState } from 'react';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
@@ -15,23 +15,30 @@ interface Props {
 }
 
 const ClientWalletProvider: FC<Props> = ({ children }) => {
+  const [mounted, setMounted] = useState(false);
+  
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network = WalletAdapterNetwork.Mainnet;
 
   // You can also provide a custom RPC endpoint
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
-  // Initialize ONLY Phantom wallet adapter
+  // Initialize ONLY Phantom wallet adapter with proper configuration
   const wallets = useMemo(
-    () => [new PhantomWalletAdapter()],
+    () => [new PhantomWalletAdapter({ detectPhantom: true })],
     []
   );
+  
+  // Fix for hydration issues
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
+      <WalletProvider wallets={wallets} autoConnect onError={(error) => console.error(error)}>
         <WalletModalProvider>
-          {children}
+          {mounted && children}
           
           {/* Custom styles to ensure Phantom is the only option shown */}
           <style jsx global>{`

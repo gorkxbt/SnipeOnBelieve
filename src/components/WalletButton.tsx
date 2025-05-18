@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 // We're using dynamic imports with error handling
@@ -8,12 +8,41 @@ const WalletMultiButtonDynamic = dynamic(
   async () => {
     try {
       // Try to import the wallet button
-      return (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton;
+      const { WalletMultiButton } = await import('@solana/wallet-adapter-react-ui');
+      
+      // Return a custom wrapper to modify the button text
+      return (props: any) => {
+        const [buttonText, setButtonText] = useState<string | null>(null);
+        
+        useEffect(() => {
+          // Override the button text after component mounts
+          const modifyButtonText = () => {
+            const buttonEl = document.querySelector('.wallet-adapter-button-trigger');
+            if (buttonEl) {
+              const textNode = Array.from(buttonEl.childNodes).find(
+                node => node.nodeType === Node.TEXT_NODE
+              );
+              
+              if (textNode && textNode.textContent?.includes('Connect Phantom')) {
+                textNode.textContent = 'Connect';
+              }
+            }
+          };
+          
+          modifyButtonText();
+          // Run again after a short delay to ensure it catches any updates
+          const timer = setTimeout(modifyButtonText, 100);
+          
+          return () => clearTimeout(timer);
+        }, []);
+        
+        return <WalletMultiButton {...props} />;
+      };
     } catch (e) {
       // If it fails, return a simple button component
       return () => (
         <button className="btn-primary bg-secondary hover:bg-opacity-90 text-white font-semibold py-2 px-6 rounded-full transition-all">
-          Connect Wallet
+          Connect
         </button>
       );
     }
