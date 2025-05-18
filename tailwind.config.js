@@ -8,19 +8,26 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#0D0D30', // Dark blue from believe.app
-        secondary: '#7B41FF', // Purple accent color
-        accent: '#FFD60A', // Yellow accent color
-        dark: '#0A0A20',
-        light: '#F8F9FA',
+        primary: '#FFFFFF',         // White background 
+        secondary: '#4F46E5',       // Indigo/purple accent
+        accent: '#111827',          // Dark text color
+        dark: '#111827',            // Text color
+        light: '#FFFFFF',           // White
+        'believe-gray': '#6B7280',  // Secondary text
+        'believe-light': '#F9FAFB', // Light background
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
-        display: ['Poppins', 'ui-sans-serif', 'system-ui'],
+        sans: ['Open Runde', 'Inter', 'ui-sans-serif', 'system-ui'],
+        display: ['Open Runde', 'Inter', 'ui-sans-serif', 'system-ui'],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'hero-pattern': 'linear-gradient(to right, #0D0D30, #1A1A4A)',
+        'hero-pattern': 'linear-gradient(to right, #FFFFFF, #F9FAFB)',
+      },
+      borderRadius: {
+        'xl': '1rem',
+        '2xl': '2rem',
+        'full': '9999px',
       },
     },
   },

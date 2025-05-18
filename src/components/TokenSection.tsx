@@ -32,48 +32,48 @@ const TokenSection = () => {
   ];
 
   return (
-    <section id="token" className="py-20 bg-primary">
+    <section id="token" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold font-display text-white">
+          <h2 className="text-3xl md:text-4xl font-bold text-dark">
             $SOB <span className="text-secondary">Token</span>
           </h2>
-          <p className="mt-4 text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
             The native utility token powering the SnipeOnBelieve platform on Solana.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
-            <div className="bg-dark bg-opacity-80 backdrop-blur-md rounded-2xl p-8 border border-gray-800 relative overflow-hidden">
-              <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-secondary opacity-10 rounded-full blur-3xl"></div>
+            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+              <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-secondary opacity-5 rounded-full blur-3xl"></div>
               
               <div className="flex items-center mb-6">
                 <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center text-white font-bold text-xl mr-4">
                   SOB
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold">$SOB Token</h3>
-                  <p className="text-gray-400">Solana Network</p>
+                  <h3 className="text-2xl font-bold text-dark">$SOB Token</h3>
+                  <p className="text-gray-500">Solana Network</p>
                 </div>
               </div>
               
               <div className="space-y-4 mb-8">
-                <div className="flex justify-between border-b border-gray-700 pb-2">
-                  <span className="text-gray-400">Token Type</span>
-                  <span className="font-medium">SPL (Solana Program Library)</span>
+                <div className="flex justify-between border-b border-gray-100 pb-2">
+                  <span className="text-gray-500">Token Type</span>
+                  <span className="font-medium text-dark">SPL (Solana Program Library)</span>
                 </div>
-                <div className="flex justify-between border-b border-gray-700 pb-2">
-                  <span className="text-gray-400">Total Supply</span>
-                  <span className="font-medium">100,000,000 SOB</span>
+                <div className="flex justify-between border-b border-gray-100 pb-2">
+                  <span className="text-gray-500">Total Supply</span>
+                  <span className="font-medium text-dark">100,000,000 SOB</span>
                 </div>
-                <div className="flex justify-between border-b border-gray-700 pb-2">
-                  <span className="text-gray-400">Circulating Supply</span>
-                  <span className="font-medium">35,000,000 SOB</span>
+                <div className="flex justify-between border-b border-gray-100 pb-2">
+                  <span className="text-gray-500">Circulating Supply</span>
+                  <span className="font-medium text-dark">35,000,000 SOB</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Access Requirement</span>
-                  <span className="font-medium">1,000 SOB</span>
+                  <span className="text-gray-500">Access Requirement</span>
+                  <span className="font-medium text-dark">1,000 SOB</span>
                 </div>
               </div>
               
@@ -85,42 +85,42 @@ const TokenSection = () => {
           </div>
           
           <div>
-            <h3 className="text-2xl font-bold text-white mb-6">Token Utility</h3>
+            <h3 className="text-2xl font-bold text-dark mb-6">Token Utility</h3>
             <div className="space-y-6">
               {tokenUtilities.map((utility, index) => (
                 <div key={index} className="flex items-start">
-                  <div className="bg-secondary bg-opacity-20 p-3 rounded-lg text-secondary mr-4">
+                  <div className="bg-secondary bg-opacity-10 p-3 rounded-lg text-secondary mr-4">
                     {utility.icon}
                   </div>
                   <div>
-                    <h4 className="text-xl font-medium text-white">{utility.title}</h4>
-                    <p className="text-gray-400 mt-1">{utility.description}</p>
+                    <h4 className="text-xl font-medium text-dark">{utility.title}</h4>
+                    <p className="text-gray-600 mt-1">{utility.description}</p>
                   </div>
                 </div>
               ))}
             </div>
             
-            <div className="mt-8 bg-dark bg-opacity-60 rounded-lg p-5 border border-gray-800">
-              <h4 className="text-lg font-medium text-white mb-2">Tokenomics</h4>
-              <p className="text-gray-400 mb-4">
+            <div className="mt-8 bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+              <h4 className="text-lg font-medium text-dark mb-2">Tokenomics</h4>
+              <p className="text-gray-600 mb-4">
                 The $SOB token is designed with a balanced distribution to ensure long-term sustainability and value for holders.
               </p>
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-primary rounded p-3">
-                  <div className="text-sm text-gray-400">Platform Development</div>
-                  <div className="text-xl font-bold">40%</div>
+                <div className="bg-gray-50 rounded p-3">
+                  <div className="text-sm text-gray-500">Platform Development</div>
+                  <div className="text-xl font-bold text-dark">40%</div>
                 </div>
-                <div className="bg-primary rounded p-3">
-                  <div className="text-sm text-gray-400">Community Rewards</div>
-                  <div className="text-xl font-bold">25%</div>
+                <div className="bg-gray-50 rounded p-3">
+                  <div className="text-sm text-gray-500">Community Rewards</div>
+                  <div className="text-xl font-bold text-dark">25%</div>
                 </div>
-                <div className="bg-primary rounded p-3">
-                  <div className="text-sm text-gray-400">Team & Advisors</div>
-                  <div className="text-xl font-bold">15%</div>
+                <div className="bg-gray-50 rounded p-3">
+                  <div className="text-sm text-gray-500">Team & Advisors</div>
+                  <div className="text-xl font-bold text-dark">15%</div>
                 </div>
-                <div className="bg-primary rounded p-3">
-                  <div className="text-sm text-gray-400">Liquidity Pool</div>
-                  <div className="text-xl font-bold">20%</div>
+                <div className="bg-gray-50 rounded p-3">
+                  <div className="text-sm text-gray-500">Liquidity Pool</div>
+                  <div className="text-xl font-bold text-dark">20%</div>
                 </div>
               </div>
             </div>

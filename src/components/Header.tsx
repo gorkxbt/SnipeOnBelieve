@@ -14,26 +14,32 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="fixed w-full z-50 bg-primary bg-opacity-80 backdrop-blur-md">
+    <header className="fixed w-full z-50 bg-primary border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+        <div className="flex justify-between items-center py-3">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <span className="text-2xl font-bold text-white">
+              <span className="text-lg font-bold text-dark">
                 Snipe<span className="text-secondary">On</span>Believe
               </span>
             </Link>
           </div>
           
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <Link href="#features" className="text-white hover:text-accent transition-colors">
+          <nav className="hidden md:flex space-x-6">
+            <Link href="#features" className="nav-link">
               Features
             </Link>
-            <Link href="#dashboard" className="text-white hover:text-accent transition-colors">
+            <Link href="#dashboard" className="nav-link">
               Dashboard
             </Link>
-            <Link href="#token" className="text-white hover:text-accent transition-colors">
+            <Link href="/whitepaper" className="nav-link">
+              Whitepaper
+            </Link>
+            <Link href="/analytics" className="nav-link">
+              Analytics
+            </Link>
+            <Link href="#token" className="nav-link">
               $SOB Token
             </Link>
           </nav>
@@ -49,7 +55,7 @@ const Header = () => {
           <div className="md:hidden">
             <button
               type="button"
-              className="text-white"
+              className="text-dark"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
@@ -72,21 +78,35 @@ const Header = () => {
               <Link 
                 href="#features" 
                 onClick={() => setIsMenuOpen(false)}
-                className="text-white hover:text-accent transition-colors"
+                className="nav-link"
               >
                 Features
               </Link>
               <Link 
                 href="#dashboard" 
                 onClick={() => setIsMenuOpen(false)}
-                className="text-white hover:text-accent transition-colors"
+                className="nav-link"
               >
                 Dashboard
               </Link>
               <Link 
+                href="/whitepaper" 
+                onClick={() => setIsMenuOpen(false)}
+                className="nav-link"
+              >
+                Whitepaper
+              </Link>
+              <Link 
+                href="/analytics" 
+                onClick={() => setIsMenuOpen(false)}
+                className="nav-link"
+              >
+                Analytics
+              </Link>
+              <Link 
                 href="#token" 
                 onClick={() => setIsMenuOpen(false)}
-                className="text-white hover:text-accent transition-colors"
+                className="nav-link"
               >
                 $SOB Token
               </Link>

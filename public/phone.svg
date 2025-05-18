@@ -1,0 +1,34 @@
+<svg width="240" height="480" viewBox="0 0 240 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Phone Frame -->
+  <rect width="240" height="480" rx="32" fill="#1F1F1F"/>
+  <rect x="8" y="8" width="224" height="464" rx="24" fill="#FFFFFF"/>
+  
+  <!-- App Screen -->
+  <rect x="8" y="8" width="224" height="464" rx="24" fill="#F5F5F5"/>
+  
+  <!-- App Header -->
+  <rect x="8" y="8" width="224" height="60" rx="24" fill="#4F46E5"/>
+  <circle cx="34" cy="38" r="12" fill="white" fillOpacity="0.9"/>
+  <rect x="58" y="30" width="120" height="16" rx="4" fill="white" fillOpacity="0.7"/>
+  <circle cx="206" cy="38" r="12" fill="white" fillOpacity="0.9"/>
+  
+  <!-- App Content -->
+  <rect x="24" y="84" width="192" height="32" rx="4" fill="#FFFFFF"/>
+  <rect x="24" y="132" width="192" height="120" rx="8" fill="#FFFFFF"/>
+  <rect x="40" y="148" width="160" height="88" rx="4" fill="#EFEFEF"/>
+  
+  <!-- App Text Elements -->
+  <rect x="40" y="104" width="100" height="8" rx="4" fill="#1F1F1F"/>
+  <rect x="40" y="252" width="160" height="8" rx="4" fill="#1F1F1F"/>
+  <rect x="40" y="268" width="120" height="8" rx="4" fill="#1F1F1F"/>
+  
+  <!-- App Buttons -->
+  <rect x="40" y="300" width="160" height="40" rx="20" fill="#4F46E5"/>
+  <rect x="80" y="316" width="80" height="8" rx="4" fill="white"/>
+  
+  <!-- Bottom Navigation -->
+  <rect x="8" y="420" width="224" height="52" rx="0 0 24 24" fill="white"/>
+  <circle cx="40" cy="446" r="8" fill="#4F46E5" fillOpacity="0.7"/>
+  <circle cx="120" cy="446" r="8" fill="#4F46E5"/>
+  <circle cx="200" cy="446" r="8" fill="#4F46E5" fillOpacity="0.7"/>
+</svg> 
