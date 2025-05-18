@@ -1,0 +1,96 @@
+'use client';
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+import WalletButton from './WalletButton';
+
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  return (
+    <header className="fixed w-full z-50 bg-primary bg-opacity-80 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center py-4">
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center">
+              <span className="text-2xl font-bold text-white">
+                Snipe<span className="text-secondary">On</span>Believe
+              </span>
+            </Link>
+          </div>
+          
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex space-x-8">
+            <Link href="#features" className="text-white hover:text-accent transition-colors">
+              Features
+            </Link>
+            <Link href="#dashboard" className="text-white hover:text-accent transition-colors">
+              Dashboard
+            </Link>
+            <Link href="#token" className="text-white hover:text-accent transition-colors">
+              $SOB Token
+            </Link>
+          </nav>
+          
+          {/* Connect Wallet Button */}
+          <div className="hidden md:block">
+            <WalletButton />
+          </div>
+          
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              type="button"
+              className="text-white"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+        
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4">
+            <div className="flex flex-col space-y-4">
+              <Link 
+                href="#features" 
+                onClick={() => setIsMenuOpen(false)}
+                className="text-white hover:text-accent transition-colors"
+              >
+                Features
+              </Link>
+              <Link 
+                href="#dashboard" 
+                onClick={() => setIsMenuOpen(false)}
+                className="text-white hover:text-accent transition-colors"
+              >
+                Dashboard
+              </Link>
+              <Link 
+                href="#token" 
+                onClick={() => setIsMenuOpen(false)}
+                className="text-white hover:text-accent transition-colors"
+              >
+                $SOB Token
+              </Link>
+              <div className="pt-2">
+                <WalletButton />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+};
+
+export default Header; 

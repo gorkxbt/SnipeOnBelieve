@@ -1,0 +1,134 @@
+import React from 'react';
+
+const TokenSection = () => {
+  const tokenUtilities = [
+    {
+      title: 'Access Requirement',
+      description: 'Hold at least 1,000 $SOB tokens in your connected Solana wallet to access the platform.',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+        </svg>
+      ),
+    },
+    {
+      title: 'Fee Structure',
+      description: 'Each transaction executed through the platform incurs a 0.3% fee, supporting platform development.',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+    },
+    {
+      title: 'Governance Rights',
+      description: 'Token holders can vote on platform upgrades and new features via our governance portal.',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+        </svg>
+      ),
+    },
+  ];
+
+  return (
+    <section id="token" className="py-20 bg-primary">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold font-display text-white">
+            $SOB <span className="text-secondary">Token</span>
+          </h2>
+          <p className="mt-4 text-xl text-gray-300 max-w-3xl mx-auto">
+            The native utility token powering the SnipeOnBelieve platform on Solana.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <div className="bg-dark bg-opacity-80 backdrop-blur-md rounded-2xl p-8 border border-gray-800 relative overflow-hidden">
+              <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-secondary opacity-10 rounded-full blur-3xl"></div>
+              
+              <div className="flex items-center mb-6">
+                <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center text-white font-bold text-xl mr-4">
+                  SOB
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold">$SOB Token</h3>
+                  <p className="text-gray-400">Solana Network</p>
+                </div>
+              </div>
+              
+              <div className="space-y-4 mb-8">
+                <div className="flex justify-between border-b border-gray-700 pb-2">
+                  <span className="text-gray-400">Token Type</span>
+                  <span className="font-medium">SPL (Solana Program Library)</span>
+                </div>
+                <div className="flex justify-between border-b border-gray-700 pb-2">
+                  <span className="text-gray-400">Total Supply</span>
+                  <span className="font-medium">100,000,000 SOB</span>
+                </div>
+                <div className="flex justify-between border-b border-gray-700 pb-2">
+                  <span className="text-gray-400">Circulating Supply</span>
+                  <span className="font-medium">35,000,000 SOB</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Access Requirement</span>
+                  <span className="font-medium">1,000 SOB</span>
+                </div>
+              </div>
+              
+              <div className="flex justify-center space-x-4">
+                <button className="btn-primary">Buy $SOB</button>
+                <button className="btn-secondary">Add to Wallet</button>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <h3 className="text-2xl font-bold text-white mb-6">Token Utility</h3>
+            <div className="space-y-6">
+              {tokenUtilities.map((utility, index) => (
+                <div key={index} className="flex items-start">
+                  <div className="bg-secondary bg-opacity-20 p-3 rounded-lg text-secondary mr-4">
+                    {utility.icon}
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-medium text-white">{utility.title}</h4>
+                    <p className="text-gray-400 mt-1">{utility.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-8 bg-dark bg-opacity-60 rounded-lg p-5 border border-gray-800">
+              <h4 className="text-lg font-medium text-white mb-2">Tokenomics</h4>
+              <p className="text-gray-400 mb-4">
+                The $SOB token is designed with a balanced distribution to ensure long-term sustainability and value for holders.
+              </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-primary rounded p-3">
+                  <div className="text-sm text-gray-400">Platform Development</div>
+                  <div className="text-xl font-bold">40%</div>
+                </div>
+                <div className="bg-primary rounded p-3">
+                  <div className="text-sm text-gray-400">Community Rewards</div>
+                  <div className="text-xl font-bold">25%</div>
+                </div>
+                <div className="bg-primary rounded p-3">
+                  <div className="text-sm text-gray-400">Team & Advisors</div>
+                  <div className="text-xl font-bold">15%</div>
+                </div>
+                <div className="bg-primary rounded p-3">
+                  <div className="text-sm text-gray-400">Liquidity Pool</div>
+                  <div className="text-xl font-bold">20%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default TokenSection; 
