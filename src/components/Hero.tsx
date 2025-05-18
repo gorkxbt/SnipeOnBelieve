@@ -13,15 +13,14 @@ const Hero = () => {
             </h1>
             <p className="mt-6 text-xl text-gray-600 max-w-2xl">
               The all-in-one analytics and sniping platform for the BelieveApp launchpad on Solana.
-              Discover new opportunities and act faster than the competition.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-              <button className="btn-primary">
+              <Link href="/#dashboard" className="btn-primary">
                 Launch App
-              </button>
-              <button className="btn-secondary">
-                Learn More
-              </button>
+              </Link>
+              <Link href="/whitepaper" className="btn-secondary">
+                Documentation
+              </Link>
             </div>
 
             <div className="mt-12 grid grid-cols-3 gap-4 max-w-lg mx-auto md:mx-0">
@@ -85,7 +84,9 @@ const Hero = () => {
                     </div>
                   </div>
                 </div>
-                <button className="btn-primary w-full mt-6">Snipe Now</button>
+                <Link href="/#dashboard" className="btn-primary w-full mt-6 block text-center">
+                  Snipe Now
+                </Link>
               </div>
             </div>
           </div>

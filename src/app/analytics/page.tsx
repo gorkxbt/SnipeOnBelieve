@@ -28,6 +28,8 @@ interface TokenPair {
   liquidity?: {
     usd?: string;
   };
+  dexId?: string;
+  pairCreatedAt?: string;
 }
 
 export default function Analytics() {
@@ -46,16 +48,40 @@ export default function Analytics() {
       try {
         setIsLoading(true);
         // API for getting Solana tokens on major DEXes
-        const response = await fetch('https://api.dexscreener.com/latest/dex/tokens/So11111111111111111111111111111111111111112');
+        const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/solana/meteora');
         const data = await response.json();
         
-        // Sort pairs by liquidity
-        const sortedPairs = data.pairs
-          .filter((pair: TokenPair) => pair.chainId === 'solana')
-          .sort((a: TokenPair, b: TokenPair) => parseFloat(b.liquidity?.usd || '0') - parseFloat(a.liquidity?.usd || '0'))
+        // Get current time
+        const currentTime = new Date();
+        // One hour ago
+        const oneHourAgo = new Date(currentTime.getTime() - 60 * 60 * 1000);
+        
+        // Filter pairs that are on Solana Meteora and less than 1 hour old
+        const recentPairs = data.pairs
+          .filter((pair: TokenPair) => {
+            // Check if it's a Meteora pool
+            if (!pair.dexId?.toLowerCase().includes('meteora')) {
+              return false;
+            }
+            
+            // Check if timestamp is available
+            if (!pair.pairCreatedAt) {
+              return false;
+            }
+            
+            // Convert timestamp to date and check if it's less than 1 hour old
+            const pairCreatedAt = new Date(parseInt(pair.pairCreatedAt) * 1000);
+            return pairCreatedAt >= oneHourAgo;
+          })
+          .sort((a: TokenPair, b: TokenPair) => {
+            // Sort by creation time (newest first)
+            const timeA = a.pairCreatedAt ? parseInt(a.pairCreatedAt) : 0;
+            const timeB = b.pairCreatedAt ? parseInt(b.pairCreatedAt) : 0;
+            return timeB - timeA;
+          })
           .slice(0, 5);
         
-        setTokenData(sortedPairs);
+        setTokenData(recentPairs);
       } catch (error) {
         console.error('Error fetching token data:', error);
       } finally {
@@ -107,7 +133,7 @@ export default function Analytics() {
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-12">
-          <h2 className="text-xl font-bold text-dark mb-4">Top Solana Tokens</h2>
+          <h2 className="text-xl font-bold text-dark mb-4">Latest Meteora Pools (&lt; 1 Hour)</h2>
           
           {isLoading ? (
             <div className="animate-pulse space-y-4">
@@ -124,62 +150,68 @@ export default function Analytics() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-left border-b border-gray-200">
-                    <th className="pb-3 text-gray-500 font-medium">Token</th>
-                    <th className="pb-3 text-gray-500 font-medium">Price</th>
-                    <th className="pb-3 text-gray-500 font-medium">24h Change</th>
-                    <th className="pb-3 text-gray-500 font-medium">24h Volume</th>
-                    <th className="pb-3 text-gray-500 font-medium">Liquidity</th>
-                    <th className="pb-3 text-gray-500 font-medium">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tokenData.map((token, index) => (
-                    <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                      <td className="py-4">
-                        <div className="flex items-center">
-                          <div className="w-8 h-8 rounded-full bg-secondary/20 mr-3 flex items-center justify-center text-xs overflow-hidden">
-                            {token.baseToken?.symbol ? (
-                              <Image 
-                                src={getAvatarUrl(token.baseToken?.symbol)}
-                                alt={token.baseToken?.symbol || 'Token'}
-                                width={32}
-                                height={32}
-                              />
-                            ) : (
-                              'XX'
-                            )}
-                          </div>
-                          <div>
-                            <div className="font-medium text-dark">{token.baseToken?.name || 'Unknown Token'}</div>
-                            <div className="text-xs text-gray-500">${token.baseToken?.symbol || 'XXX'}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-4 text-dark">{formatPrice(token.priceUsd)}</td>
-                      <td className="py-4">
-                        <span className={parseFloat(token.priceChange?.h24 || '0') >= 0 ? 'text-green-500' : 'text-red-500'}>
-                          {token.priceChange?.h24 ? `${token.priceChange.h24}%` : 'N/A'}
-                        </span>
-                      </td>
-                      <td className="py-4 text-dark">${parseFloat(token.volume?.h24 || '0').toLocaleString()}</td>
-                      <td className="py-4 text-dark">${parseFloat(token.liquidity?.usd || '0').toLocaleString()}</td>
-                      <td className="py-4">
-                        <a 
-                          href={`https://dexscreener.com/${token.chainId}/${token.pairAddress}`} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="bg-secondary text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-all"
-                        >
-                          View Chart
-                        </a>
-                      </td>
+              {tokenData.length > 0 ? (
+                <table className="w-full">
+                  <thead>
+                    <tr className="text-left border-b border-gray-200">
+                      <th className="pb-3 text-gray-500 font-medium">Token</th>
+                      <th className="pb-3 text-gray-500 font-medium">Price</th>
+                      <th className="pb-3 text-gray-500 font-medium">24h Change</th>
+                      <th className="pb-3 text-gray-500 font-medium">24h Volume</th>
+                      <th className="pb-3 text-gray-500 font-medium">Liquidity</th>
+                      <th className="pb-3 text-gray-500 font-medium">Action</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {tokenData.map((token, index) => (
+                      <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                        <td className="py-4">
+                          <div className="flex items-center">
+                            <div className="w-8 h-8 rounded-full bg-secondary/20 mr-3 flex items-center justify-center text-xs overflow-hidden">
+                              {token.baseToken?.symbol ? (
+                                <Image 
+                                  src={getAvatarUrl(token.baseToken?.symbol)}
+                                  alt={token.baseToken?.symbol || 'Token'}
+                                  width={32}
+                                  height={32}
+                                />
+                              ) : (
+                                'XX'
+                              )}
+                            </div>
+                            <div>
+                              <div className="font-medium text-dark">{token.baseToken?.name || 'Unknown Token'}</div>
+                              <div className="text-xs text-gray-500">${token.baseToken?.symbol || 'XXX'}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4 text-dark">{formatPrice(token.priceUsd)}</td>
+                        <td className="py-4">
+                          <span className={parseFloat(token.priceChange?.h24 || '0') >= 0 ? 'text-green-500' : 'text-red-500'}>
+                            {token.priceChange?.h24 ? `${token.priceChange.h24}%` : 'N/A'}
+                          </span>
+                        </td>
+                        <td className="py-4 text-dark">${parseFloat(token.volume?.h24 || '0').toLocaleString()}</td>
+                        <td className="py-4 text-dark">${parseFloat(token.liquidity?.usd || '0').toLocaleString()}</td>
+                        <td className="py-4">
+                          <a 
+                            href={`https://dexscreener.com/${token.chainId}/${token.pairAddress}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="bg-secondary text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-all"
+                          >
+                            View Chart
+                          </a>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="py-8 text-center">
+                  <p className="text-gray-500">No new Meteora pools created in the last hour. Check back later!</p>
+                </div>
+              )}
             </div>
           )}
         </div>
