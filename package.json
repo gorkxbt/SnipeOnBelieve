@@ -18,7 +18,8 @@
     "@solana/web3.js": "^1.87.0",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/wallet-adapter-react-ui": "^0.9.35",
-    "@solana/wallet-adapter-wallets": "^0.19.23"
+    "@solana/wallet-adapter-wallets": "^0.19.23",
+    "@solana/wallet-adapter-base": "^0.9.23"
   },
   "devDependencies": {
     "@types/node": "^20.8.0",
@@ -27,5 +28,9 @@
     "typescript": "^5.2.0",
     "eslint": "^8.50.0",
     "eslint-config-next": "^14.0.0"
+  },
+  "overrides": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 } 

@@ -24,6 +24,12 @@ const WalletButton: FC = () => {
         .wallet-adapter-dropdown-list-item:hover {
           background-color: #1A1A40;
         }
+        .wallet-adapter-button-trigger {
+          background-color: #7B41FF !important;
+        }
+        .wallet-adapter-button:not([disabled]):hover {
+          background-color: #6934e0 !important;
+        }
       `}</style>
     </div>
   );
