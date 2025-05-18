@@ -12,7 +12,7 @@ const Hero = () => {
               Snipe<span className="text-secondary">On</span>Believe
             </h1>
             <p className="mt-6 text-xl text-gray-600 max-w-2xl">
-              The all-in-one analytics and sniping platform for the BelieveApp launchpad on Solana.
+              Next-gen token sniping powered by Mintech infrastructure
             </p>
             <div className="mt-10 flex flex-col sm:flex-row justify-center md:justify-start gap-4">
               <Link href="/#dashboard" className="btn-primary">
