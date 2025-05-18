@@ -167,16 +167,16 @@ const Home = () => {
 
         {/* How it works */}
         <div className={`bg-white dark:bg-dark-surface rounded-xl p-10 shadow-lg border border-gray-100 dark:border-dark-border mb-20 ${isLoaded ? 'animate-fadeIn' : 'opacity-0'}`} style={{ animationDelay: '800ms' }}>
-          <h2 className="text-2xl md:text-3xl font-bold text-dark dark:text-white mb-10 text-center relative inline-block">
+          <h2 className="text-2xl md:text-3xl font-bold text-dark dark:text-white mb-12 text-center relative inline-block">
             How It Works
             <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-secondary rounded-full"></div>
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            {/* Connecting line - enhanced for better visibility */}
-            <div className="hidden md:block absolute top-14 left-0 right-0 h-1 bg-secondary z-0" style={{ width: '80%', margin: '0 auto' }}></div>
+            {/* Connecting line - positioned lower and thinner for better appearance */}
+            <div className="hidden md:block absolute top-24 left-0 right-0 h-0.5 bg-secondary z-0" style={{ width: '70%', margin: '0 auto' }}></div>
             
-            {/* Steps with staggered animation */}
+            {/* Steps with staggered animation and better alignment */}
             {[
               {
                 number: 1,
@@ -195,11 +195,11 @@ const Home = () => {
               }
             ].map((step, index) => (
               <div key={index} className="text-center relative z-10" style={{ animationDelay: `${800 + index * 200}ms` }}>
-                <div className="bg-secondary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-secondary transform transition-all duration-300 hover:scale-110">
+                <div className="bg-secondary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-8 border-2 border-secondary transform transition-all duration-300 hover:scale-110">
                   <span className="text-secondary font-bold text-2xl">{step.number}</span>
                 </div>
                 <h3 className="font-bold text-dark dark:text-white mb-3 text-xl">{step.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-gray-600 dark:text-gray-400 max-w-xs mx-auto">
                   {step.description}
                 </p>
               </div>

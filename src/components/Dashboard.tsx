@@ -429,40 +429,80 @@ const Dashboard = () => {
               Connect your wallet to access the sniping tools.
             </p>
             <button 
-              className="btn-primary bg-secondary hover:bg-opacity-90 text-white font-semibold py-2 px-6 rounded-full transition-all flex items-center mx-auto"
+              className="btn-primary bg-secondary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-full transition-all flex items-center mx-auto"
               onClick={() => {
                 try {
-                  // More reliable method to click the wallet adapter button
-                  const walletBtn = document.querySelector('.wallet-adapter-button-trigger');
-                  if (walletBtn && walletBtn instanceof HTMLElement) {
-                    walletBtn.click();
-                  } else {
-                    // Fallback method - create a WalletMultiButton programmatically
+                  // More reliable direct approach with an artificial timeout to ensure modal stays open
+                  const openWalletModal = () => {
+                    // Force any existing modals to close first
+                    const closeButtons = document.querySelectorAll('.wallet-adapter-modal-button-close');
+                    closeButtons.forEach(btn => {
+                      if (btn instanceof HTMLElement) btn.click();
+                    });
+
+                    // Small delay to ensure any closing animations complete
+                    setTimeout(() => {
+                      // Look for the wallet button and click it
+                      const walletBtn = document.querySelector('.wallet-adapter-button-trigger');
+                      if (walletBtn && walletBtn instanceof HTMLElement) {
+                        walletBtn.click();
+                        
+                        // Add event listener to prevent modal from closing too quickly
+                        const handleModalOpen = () => {
+                          const modal = document.querySelector('.wallet-adapter-modal-container');
+                          if (modal) {
+                            // Force modal to stay visible
+                            modal.setAttribute('style', 'display: flex !important; opacity: 1 !important;');
+                            
+                            // Find and force click on the Phantom button
+                            setTimeout(() => {
+                              const phantomBtn = document.querySelector('.wallet-adapter-button[data-wallet="Phantom"]');
+                              if (phantomBtn && phantomBtn instanceof HTMLElement) {
+                                phantomBtn.click();
+                              }
+                            }, 300);
+                          }
+                        };
+                        
+                        // Attempt to catch the modal after it appears
+                        setTimeout(handleModalOpen, 100);
+                        setTimeout(handleModalOpen, 300);
+                        setTimeout(handleModalOpen, 500);
+                      }
+                    }, 100);
+                  };
+                  
+                  // Invoke our opener function
+                  openWalletModal();
+                } catch (error) {
+                  console.error("Error connecting wallet:", error);
+                  // Fallback to direct modal creation
+                  try {
                     import('@solana/wallet-adapter-react-ui').then(({ WalletMultiButton }) => {
-                      const tempButton = document.createElement('div');
-                      document.body.appendChild(tempButton);
-                      const root = createRoot(tempButton);
-                      root.render(<WalletMultiButton />);
+                      // Create a visible notification to the user
+                      const notification = document.createElement('div');
+                      notification.style.position = 'fixed';
+                      notification.style.bottom = '20px';
+                      notification.style.right = '20px';
+                      notification.style.backgroundColor = '#21d55a';
+                      notification.style.color = 'white';
+                      notification.style.padding = '12px 20px';
+                      notification.style.borderRadius = '8px';
+                      notification.style.zIndex = '9999';
+                      notification.innerText = 'Please click "Connect" again';
+                      document.body.appendChild(notification);
                       
                       setTimeout(() => {
-                        const createdBtn = document.querySelector('.wallet-adapter-button-trigger');
-                        if (createdBtn && createdBtn instanceof HTMLElement) {
-                          createdBtn.click();
-                          // Clean up
-                          setTimeout(() => {
-                            root.unmount();
-                            document.body.removeChild(tempButton);
-                          }, 500);
-                        }
-                      }, 100);
-                    }).catch(console.error);
+                        document.body.removeChild(notification);
+                      }, 3000);
+                    });
+                  } catch (e) {
+                    console.error("Fallback failed:", e);
                   }
-                } catch (error) {
-                  console.error("Error clicking wallet button:", error);
                 }
               }}
             >
-              <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="mr-2">
+              <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="mr-3">
                 <path d="M21.3853 8.50991C21.3388 8.37356 21.2481 8.25692 21.1278 8.17751C21.0075 8.0981 20.865 8.0603 20.7206 8.07144H15.6301C15.6878 7.62485 15.6909 7.17289 15.6394 6.72561C15.5171 5.65689 15.0911 4.64355 14.4147 3.80141C13.9302 3.21816 13.2857 2.78116 12.5531 2.54549C11.8206 2.30982 11.0343 2.28504 10.2886 2.47446C9.57169 2.69321 8.92487 3.10207 8.41984 3.65854C7.95364 4.20862 7.63047 4.86461 7.47841 5.56982C7.32051 6.37077 7.3225 7.19683 7.48424 7.997C7.54621 8.22383 7.62395 8.44533 7.71667 8.66C7.4253 9.11454 7.05626 9.5102 6.6292 9.8303C6.43402 9.94862 6.26121 10.1009 6.12087 10.2801C6.00383 10.43 5.92179 10.6035 5.88161 10.7882C5.84144 10.9729 5.84417 11.1641 5.88959 11.3473C5.93501 11.5305 6.02189 11.701 6.14285 11.847C6.26381 11.993 6.41559 12.1107 6.59081 12.1918C7.25798 12.452 7.73809 13.0064 7.88651 13.6818C7.96392 14.0576 7.98472 14.4435 7.94818 14.8256C7.90982 15.1891 7.81348 15.5438 7.66317 15.878C7.49613 16.2283 7.18962 16.4922 6.81937 16.609C6.44912 16.7258 6.04718 16.684 5.70968 16.4937C5.1794 16.2097 4.55974 16.11 3.96557 16.2133C3.37139 16.3166 2.84274 16.6158 2.48159 17.0575C2.3213 17.2448 2.21 17.4667 2.15711 17.7043C2.10423 17.9419 2.11119 18.1879 2.17733 18.4221C2.23756 18.657 2.3495 18.8743 2.5033 19.0579C2.6571 19.2414 2.84928 19.387 3.06572 19.4846C3.2839 19.5943 3.52204 19.6574 3.76547 19.6703C4.67413 19.7149 5.57908 19.8424 6.4696 20.0509C8.19334 20.4632 9.99267 20.4632 11.7164 20.0509C12.2991 19.8891 12.8686 19.6845 13.4212 19.4382C13.8857 19.2312 14.3136 18.9497 14.6895 18.605C15.6042 17.7458 16.3173 16.6996 16.7824 15.5375C17.2476 14.3754 17.4547 13.1267 17.3903 11.879C17.3654 11.2834 17.4268 10.6875 17.5732 10.1094C17.7144 9.47942 18.0301 8.90643 18.4826 8.44979C18.5847 8.35205 18.6633 8.23335 18.7123 8.10166C18.7614 7.96996 18.7796 7.82889 18.7656 7.68915C18.7444 7.55052 18.689 7.41853 18.6038 7.30339C18.5186 7.18825 18.4063 7.09299 18.2756 7.02496C18.0044 6.89181 17.6929 6.86271 17.4004 6.94326C16.4193 7.22063 15.35 7.03695 14.5435 6.45101C14.3359 6.28903 14.1727 6.07825 14.0673 5.83669C13.9619 5.59513 13.9171 5.3297 13.9371 5.06511C13.9372 4.75516 14.0208 4.4513 14.1787 4.18675C14.3365 3.9222 14.563 3.70628 14.8351 3.5608C15.1071 3.41531 15.4144 3.34574 15.7243 3.35871C16.0343 3.37168 16.335 3.46668 16.5939 3.63375C16.8527 3.80083 17.061 4.03344 17.1962 4.30861C17.3315 4.58378 17.3889 4.89024 17.3626 5.1973C17.3363 5.50437 17.2272 5.79882 17.046 6.04693C16.919 6.22025 16.7526 6.36066 16.5598 6.4573C16.3671 6.55394 16.1532 6.6046 15.935 6.6049H15.9046C15.8245 6.60475 15.7467 6.63269 15.6861 6.6836C15.6254 6.73451 15.5857 6.80476 15.5741 6.88358C15.5625 6.9624 15.5797 7.0427 15.6227 7.10948C15.6656 7.17626 15.7314 7.2247 15.8086 7.24604C16.0284 7.31173 16.2602 7.32914 16.487 7.29683C16.7138 7.26453 16.9285 7.18339 17.1132 7.06C17.3909 6.87851 17.6241 6.63425 17.795 6.34527C17.9658 6.05628 18.0693 5.72958 18.0972 5.39051C18.1199 5.03795 18.053 4.68553 17.903 4.36713C17.7531 4.04873 17.5246 3.77638 17.241 3.57665C16.9574 3.37692 16.6278 3.25636 16.2861 3.2257C15.9444 3.19504 15.5992 3.25513 15.2835 3.40042C14.9718 3.54503 14.6975 3.76345 14.4835 4.03811C14.2696 4.31278 14.1215 4.6357 14.0508 4.97998C14.0264 5.09518 14.0132 5.21287 14.0115 5.33111C14.0115 5.41639 14.0115 5.50334 14.0115 5.58861C13.2608 5.93911 12.5891 6.45187 12.045 7.09196C11.8765 7.27976 11.7158 7.47548 11.563 7.67816C11.4363 7.53744 11.3036 7.40225 11.1653 7.27282C10.7249 6.84399 10.361 6.33965 10.0938 5.78376C9.95844 5.53093 9.86056 5.25815 9.80368 4.97546C9.63611 4.1265 9.86352 3.25229 10.4197 2.60174C10.6143 2.42086 10.8629 2.30669 11.1271 2.27743C11.3913 2.24817 11.659 2.30538 11.8893 2.44E-07C12.2351 2.54963 12.6334 2.35022 13.008 2.27222C13.3827 2.19422 13.7713 2.24144 14.1219 2.4068C14.8297 2.77022 15.4165 3.32326 15.8177 4.00471C16.219 4.68616 16.4184 5.46753 16.3932 6.25886C16.3922 6.81111 16.2803 7.35662 16.0642 7.86053H18.7387L19.2089 7.93884C19.2739 7.95075 19.3338 7.97929 19.3818 8.02125C19.4297 8.06321 19.4638 8.11698 19.4801 8.17707L21.3788 8.20323C21.5247 8.20323 21.6634 8.26087 21.7649 8.36242C21.8664 8.46397 21.9241 8.60279 21.9241 8.74874C21.9242 8.81916 21.9106 8.8889 21.8853 8.95378L21.3853 8.50991Z" fill="white"/>
               </svg>
               Connect
