@@ -77,6 +77,11 @@ export default function Analytics() {
     })}`;
   };
 
+  // Generate fallback image URL
+  const getAvatarUrl = (symbol: string | undefined): string => {
+    return `https://ui-avatars.com/api/?name=${symbol || 'XX'}&background=21d55a&color=fff`;
+  };
+
   return (
     <main className="pt-24 pb-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -136,18 +141,15 @@ export default function Analytics() {
                       <td className="py-4">
                         <div className="flex items-center">
                           <div className="w-8 h-8 rounded-full bg-secondary/20 mr-3 flex items-center justify-center text-xs overflow-hidden">
-                            {token.baseToken && token.baseToken.address && token.baseToken.symbol ? (
+                            {token.baseToken?.symbol ? (
                               <Image 
-                                src={`https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/${token.baseToken.address}/logo.png`}
-                                alt={token.baseToken.symbol}
+                                src={getAvatarUrl(token.baseToken?.symbol)}
+                                alt={token.baseToken?.symbol || 'Token'}
                                 width={32}
                                 height={32}
-                                onError={(e) => {
-                                  e.currentTarget.src = `https://ui-avatars.com/api/?name=${token.baseToken.symbol}&background=21d55a&color=fff`;
-                                }}
                               />
                             ) : (
-                              token.baseToken?.symbol?.substring(0, 2) || 'XX'
+                              'XX'
                             )}
                           </div>
                           <div>
