@@ -3,6 +3,8 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { fakeHasMinimumTokens } from '../lib/tokenCheck';
 import { useTheme } from '@/lib/ThemeContext';
 import { createRoot } from 'react-dom/client';
+import { Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
+import { useConnection } from '@solana/wallet-adapter-react';
 
 // Define types for user positions and balances
 interface TokenPosition {
@@ -31,6 +33,12 @@ interface ActiveSnipe {
   created: string;
   priority: string;
   pool: string;
+}
+
+interface SniperWallet {
+  publicKey: string;
+  balance: number;
+  isInitialized: boolean;
 }
 
 const Dashboard = () => {
@@ -96,6 +104,14 @@ const Dashboard = () => {
   
   const wallet = useWallet();
   const { theme } = useTheme();
+  const { connection } = useConnection();
+  
+  const [sniperWallet, setSniperWallet] = useState<SniperWallet | null>(null);
+  const [isGeneratingWallet, setIsGeneratingWallet] = useState(false);
+  const [depositAmount, setDepositAmount] = useState('');
+  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [walletError, setWalletError] = useState('');
   
   // Simulated user positions
   const userPositions: TokenPosition[] = [
@@ -424,10 +440,253 @@ const Dashboard = () => {
       setTotalProfit(`${(parseFloat(totalProfit.split(' ')[0]) + profit).toFixed(2)} SOL`);
     }
   };
-  
+
+  // Function to generate a new sniper wallet
+  const generateSniperWallet = async () => {
+    if (!wallet.connected || !wallet.publicKey) {
+      setWalletError('Please connect your wallet first');
+      return;
+    }
+
+    try {
+      setIsGeneratingWallet(true);
+      setWalletError('');
+
+      // Generate new keypair
+      const newKeypair = Keypair.generate();
+      
+      // Store the wallet info (in production, you'd want to encrypt this)
+      const sniperWalletInfo: SniperWallet = {
+        publicKey: newKeypair.publicKey.toString(),
+        balance: 0,
+        isInitialized: true
+      };
+
+      // In production, you'd want to securely store the private key
+      // For demo purposes, we're just storing the public key
+      localStorage.setItem('sniperWallet', JSON.stringify(sniperWalletInfo));
+      
+      setSniperWallet(sniperWalletInfo);
+    } catch (error) {
+      console.error('Error generating wallet:', error);
+      setWalletError('Failed to generate wallet. Please try again.');
+    } finally {
+      setIsGeneratingWallet(false);
+    }
+  };
+
+  // Function to deposit SOL to sniper wallet
+  const handleDeposit = async () => {
+    if (!wallet.connected || !wallet.publicKey || !sniperWallet) {
+      setWalletError('Please connect your wallet and generate a sniper wallet first');
+      return;
+    }
+
+    try {
+      setIsProcessing(true);
+      setWalletError('');
+
+      const amount = parseFloat(depositAmount);
+      if (isNaN(amount) || amount <= 0) {
+        setWalletError('Please enter a valid amount');
+        return;
+      }
+
+      // Create transfer instruction
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: wallet.publicKey,
+          toPubkey: new PublicKey(sniperWallet.publicKey),
+          lamports: amount * LAMPORTS_PER_SOL
+        })
+      );
+
+      // Send transaction
+      const signature = await wallet.sendTransaction(transaction, connection);
+      await connection.confirmTransaction(signature);
+
+      // Update balance
+      const newBalance = await connection.getBalance(new PublicKey(sniperWallet.publicKey));
+      setSniperWallet(prev => prev ? {
+        ...prev,
+        balance: newBalance / LAMPORTS_PER_SOL
+      } : null);
+
+      setDepositAmount('');
+    } catch (error) {
+      console.error('Error depositing:', error);
+      setWalletError('Failed to deposit. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Function to withdraw SOL from sniper wallet
+  const handleWithdraw = async () => {
+    if (!wallet.connected || !wallet.publicKey || !sniperWallet) {
+      setWalletError('Please connect your wallet and generate a sniper wallet first');
+      return;
+    }
+
+    try {
+      setIsProcessing(true);
+      setWalletError('');
+
+      const amount = parseFloat(withdrawAmount);
+      if (isNaN(amount) || amount <= 0) {
+        setWalletError('Please enter a valid amount');
+        return;
+      }
+
+      // In production, you'd need to sign with the sniper wallet's private key
+      // For demo purposes, we're just showing the UI
+      alert('Withdrawal functionality would be implemented here with proper private key management');
+
+      setWithdrawAmount('');
+    } catch (error) {
+      console.error('Error withdrawing:', error);
+      setWalletError('Failed to withdraw. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Load sniper wallet on component mount
+  useEffect(() => {
+    const storedWallet = localStorage.getItem('sniperWallet');
+    if (storedWallet) {
+      setSniperWallet(JSON.parse(storedWallet));
+    }
+  }, []);
+
+  // Update sniper wallet balance periodically
+  useEffect(() => {
+    if (sniperWallet?.publicKey) {
+      const updateBalance = async () => {
+        try {
+          const balance = await connection.getBalance(new PublicKey(sniperWallet.publicKey));
+          setSniperWallet(prev => prev ? {
+            ...prev,
+            balance: balance / LAMPORTS_PER_SOL
+          } : null);
+        } catch (error) {
+          console.error('Error updating balance:', error);
+        }
+      };
+
+      updateBalance();
+      const interval = setInterval(updateBalance, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [sniperWallet?.publicKey, connection]);
+
   return (
     <section id="dashboard" className="py-24 bg-light dark:bg-dark-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Sniper Wallet Section */}
+        <div className="mb-16">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold text-dark dark:text-white">
+              Sniper Wallet
+            </h2>
+            <p className="mt-3 text-gray-600 dark:text-gray-400">
+              Manage your dedicated sniper wallet for automated trading
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-dark-surface rounded-xl p-8 shadow-lg border border-gray-100 dark:border-dark-border">
+            {!sniperWallet ? (
+              <div className="text-center">
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  Generate a dedicated wallet for automated sniping operations
+                </p>
+                <button
+                  className="btn-primary"
+                  onClick={generateSniperWallet}
+                  disabled={isGeneratingWallet || !wallet.connected}
+                >
+                  {isGeneratingWallet ? 'Generating...' : 'Generate Sniper Wallet'}
+                </button>
+                {walletError && (
+                  <p className="mt-4 text-red-500 dark:text-red-400">{walletError}</p>
+                )}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-gray-50 dark:bg-dark-surface/60 rounded-lg p-6">
+                  <h3 className="font-bold text-dark dark:text-white mb-4">Wallet Information</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">Public Key</label>
+                      <div className="bg-white dark:bg-dark-surface p-3 rounded-md border border-gray-200 dark:border-dark-border break-all">
+                        {sniperWallet.publicKey}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">Balance</label>
+                      <div className="text-2xl font-bold text-dark dark:text-white">
+                        {sniperWallet.balance.toFixed(4)} SOL
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="bg-gray-50 dark:bg-dark-surface/60 rounded-lg p-6">
+                    <h3 className="font-bold text-dark dark:text-white mb-4">Deposit SOL</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">Amount (SOL)</label>
+                        <input
+                          type="number"
+                          min="0.01"
+                          step="0.01"
+                          value={depositAmount}
+                          onChange={(e) => setDepositAmount(e.target.value)}
+                          className="w-full p-2 rounded-md border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-surface"
+                          placeholder="0.00"
+                        />
+                      </div>
+                      <button
+                        className="btn-primary w-full"
+                        onClick={handleDeposit}
+                        disabled={isProcessing || !depositAmount}
+                      >
+                        {isProcessing ? 'Processing...' : 'Deposit'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 dark:bg-dark-surface/60 rounded-lg p-6">
+                    <h3 className="font-bold text-dark dark:text-white mb-4">Withdraw SOL</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">Amount (SOL)</label>
+                        <input
+                          type="number"
+                          min="0.01"
+                          step="0.01"
+                          value={withdrawAmount}
+                          onChange={(e) => setWithdrawAmount(e.target.value)}
+                          className="w-full p-2 rounded-md border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-surface"
+                          placeholder="0.00"
+                        />
+                      </div>
+                      <button
+                        className="btn-primary w-full"
+                        onClick={handleWithdraw}
+                        disabled={isProcessing || !withdrawAmount}
+                      >
+                        {isProcessing ? 'Processing...' : 'Withdraw'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold text-dark dark:text-white">
             BelieveApp Sniper Dashboard
