@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic';
 
 // Import components without wallet dependencies
 import Hero from '@/components/Hero';
-import HomeFeatures from '@/components/Features';
 
 // Dynamically import components with wallet dependencies
 const Header = dynamic(() => import('@/components/Header'), { ssr: false });
@@ -28,7 +27,6 @@ export default function Home() {
       <main className="min-h-screen">
         <div className="h-16 bg-primary" /> {/* Placeholder for header */}
         <Hero />
-        <HomeFeatures />
         <div className="py-20 bg-dark" /> {/* Placeholder for dashboard */}
         <div className="py-12 bg-primary" /> {/* Placeholder for footer */}
       </main>
@@ -40,7 +38,6 @@ export default function Home() {
       <main className="min-h-screen">
         <Header />
         <Hero />
-        <HomeFeatures />
         <Dashboard />
         <Footer />
       </main>

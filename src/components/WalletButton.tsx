@@ -46,10 +46,10 @@ const WalletButton: FC = () => {
           background-color: #1A1A40;
         }
         .wallet-adapter-button-trigger {
-          background-color: #7B41FF !important;
+          background-color: #21d55a !important;
         }
         .wallet-adapter-button:not([disabled]):hover {
-          background-color: #6934e0 !important;
+          background-color: #1cb74d !important;
         }
       `}</style>
     </div>

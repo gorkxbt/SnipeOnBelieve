@@ -89,13 +89,33 @@ const Dashboard = () => {
       logo: '/images/placeholder.png',
     },
   ];
+
+  // Mock active snipes data
+  const activeSnipes = [
+    {
+      target: '@SolanaProject',
+      type: 'X Account',
+      amount: '0.5 SOL',
+      slippage: '2.5%',
+      status: 'Monitoring',
+      created: '2 hours ago'
+    },
+    {
+      target: '$NEWTOKEN',
+      type: 'Direct Snipe',
+      amount: '0.2 SOL',
+      slippage: '3.0%',
+      status: 'Pending',
+      created: '30 minutes ago'
+    }
+  ];
   
   return (
     <section id="dashboard" className="py-20 bg-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-dark">
-            Dashboard <span className="text-secondary">Preview</span>
+            Sniper Dashboard
           </h2>
         </div>
         
@@ -103,7 +123,7 @@ const Dashboard = () => {
           <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 text-center">
             <h3 className="text-xl font-bold text-dark mb-4">Connect Your Wallet</h3>
             <p className="text-gray-600 mb-6">
-              Connect your Solana wallet to access the dashboard and sniping tools.
+              Connect your Solana wallet to access the sniping tools.
             </p>
             <button className="btn-primary" onClick={() => window.dispatchEvent(new Event('wallet-connect-click'))}>
               Connect Wallet
@@ -120,7 +140,7 @@ const Dashboard = () => {
           <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100 text-center">
             <h3 className="text-xl font-bold text-dark mb-4">Insufficient $SOB Tokens</h3>
             <p className="text-gray-600 mb-6">
-              You need at least 1,000 $SOB tokens to access the dashboard and sniping tools.
+              You need at least 1,000 $SOB tokens to access the sniping tools.
             </p>
             <a href="https://raydium.io/swap/" target="_blank" rel="noopener noreferrer" className="btn-primary">
               Buy $SOB Tokens
@@ -128,7 +148,7 @@ const Dashboard = () => {
           </div>
         ) : (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="flex border-b border-gray-200 mb-6">
+            <div className="flex border-b border-gray-200">
               <button
                 className={`px-6 py-3 font-medium ${
                   activeTab === 'newPairs'
@@ -141,13 +161,13 @@ const Dashboard = () => {
               </button>
               <button
                 className={`px-6 py-3 font-medium ${
-                  activeTab === 'graduated'
+                  activeTab === 'active'
                     ? 'text-secondary border-b-2 border-secondary'
                     : 'text-gray-500 hover:text-gray-800'
                 }`}
-                onClick={() => setActiveTab('graduated')}
+                onClick={() => setActiveTab('active')}
               >
-                Graduated Coins
+                Current Snipes
               </button>
               <button
                 className={`px-6 py-3 font-medium ${
@@ -159,10 +179,20 @@ const Dashboard = () => {
               >
                 Configure Sniper
               </button>
+              <button
+                className={`px-6 py-3 font-medium ${
+                  activeTab === 'graduated'
+                    ? 'text-secondary border-b-2 border-secondary'
+                    : 'text-gray-500 hover:text-gray-800'
+                }`}
+                onClick={() => setActiveTab('graduated')}
+              >
+                Graduated Coins
+              </button>
             </div>
             
             {activeTab === 'newPairs' && (
-              <div className="px-6 pb-6">
+              <div className="px-6 py-6 overflow-x-auto">
                 <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-gray-50 rounded-lg p-3">
                     <label className="block text-xs text-gray-500 mb-1">Market Cap</label>
@@ -252,7 +282,7 @@ const Dashboard = () => {
             )}
             
             {activeTab === 'graduated' && (
-              <div className="px-6 pb-6 overflow-x-auto">
+              <div className="px-6 py-6 overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="text-left border-b border-gray-200">
@@ -302,7 +332,7 @@ const Dashboard = () => {
             )}
             
             {activeTab === 'sniper' && (
-              <div className="px-6 pb-6">
+              <div className="px-6 py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="bg-gray-50 rounded-lg p-6">
                     <h3 className="font-bold text-dark mb-4">X Account Monitoring</h3>
@@ -353,11 +383,61 @@ const Dashboard = () => {
                     <button className="w-full btn-primary">Set Snipe</button>
                   </div>
                 </div>
+              </div>
+            )}
+            
+            {activeTab === 'active' && (
+              <div className="px-6 py-6">
+                <h3 className="font-bold text-dark mb-4">Active Snipes</h3>
                 
-                <div className="mt-8 bg-white rounded-lg border border-gray-200 p-4">
-                  <h3 className="font-medium text-dark mb-2">Active Snipes</h3>
-                  <p className="text-gray-500 text-sm italic">You have no active snipes configured. Use the forms above to set up your first snipe.</p>
-                </div>
+                {activeSnipes.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="text-left border-b border-gray-200">
+                          <th className="pb-3 text-gray-500 font-medium">Target</th>
+                          <th className="pb-3 text-gray-500 font-medium">Type</th>
+                          <th className="pb-3 text-gray-500 font-medium">Amount</th>
+                          <th className="pb-3 text-gray-500 font-medium">Slippage</th>
+                          <th className="pb-3 text-gray-500 font-medium">Status</th>
+                          <th className="pb-3 text-gray-500 font-medium">Created</th>
+                          <th className="pb-3 text-gray-500 font-medium">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {activeSnipes.map((snipe, index) => (
+                          <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                            <td className="py-4 text-dark">{snipe.target}</td>
+                            <td className="py-4 text-dark">{snipe.type}</td>
+                            <td className="py-4 text-dark">{snipe.amount}</td>
+                            <td className="py-4 text-dark">{snipe.slippage}</td>
+                            <td className="py-4">
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary bg-opacity-10 text-secondary">
+                                {snipe.status}
+                              </span>
+                            </td>
+                            <td className="py-4 text-gray-500 text-sm">{snipe.created}</td>
+                            <td className="py-4">
+                              <button className="text-red-500 hover:text-red-700 text-xs font-medium">
+                                Cancel
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="bg-gray-50 p-8 rounded-lg text-center">
+                    <p className="text-gray-500">No active snipes. Configure a snipe to get started.</p>
+                    <button 
+                      className="mt-4 btn-primary"
+                      onClick={() => setActiveTab('sniper')}
+                    >
+                      Configure Sniper
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
