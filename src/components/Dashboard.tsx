@@ -432,48 +432,32 @@ const Dashboard = () => {
               className="btn-primary bg-secondary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-full transition-all flex items-center mx-auto"
               onClick={() => {
                 try {
-                  // More reliable direct approach with an artificial timeout to ensure modal stays open
-                  const openWalletModal = () => {
-                    // Force any existing modals to close first
-                    const closeButtons = document.querySelectorAll('.wallet-adapter-modal-button-close');
-                    closeButtons.forEach(btn => {
-                      if (btn instanceof HTMLElement) btn.click();
-                    });
-
-                    // Small delay to ensure any closing animations complete
-                    setTimeout(() => {
-                      // Look for the wallet button and click it
-                      const walletBtn = document.querySelector('.wallet-adapter-button-trigger');
-                      if (walletBtn && walletBtn instanceof HTMLElement) {
-                        walletBtn.click();
-                        
-                        // Add event listener to prevent modal from closing too quickly
-                        const handleModalOpen = () => {
-                          const modal = document.querySelector('.wallet-adapter-modal-container');
-                          if (modal) {
-                            // Force modal to stay visible
-                            modal.setAttribute('style', 'display: flex !important; opacity: 1 !important;');
-                            
-                            // Find and force click on the Phantom button
-                            setTimeout(() => {
-                              const phantomBtn = document.querySelector('.wallet-adapter-button[data-wallet="Phantom"]');
-                              if (phantomBtn && phantomBtn instanceof HTMLElement) {
-                                phantomBtn.click();
-                              }
-                            }, 300);
-                          }
-                        };
-                        
-                        // Attempt to catch the modal after it appears
-                        setTimeout(handleModalOpen, 100);
-                        setTimeout(handleModalOpen, 300);
-                        setTimeout(handleModalOpen, 500);
+                  // Simpler and more reliable wallet connection approach
+                  const connectPhantomWallet = () => {
+                    // First check if wallet adapter button exists
+                    const walletBtn = document.querySelector('.wallet-adapter-button-trigger');
+                    if (walletBtn && walletBtn instanceof HTMLElement) {
+                      walletBtn.click();
+                      
+                      // Set a timeout to find and click the Phantom wallet button after modal is open
+                      setTimeout(() => {
+                        const phantomBtn = document.querySelector('.wallet-adapter-button[data-wallet="Phantom"]');
+                        if (phantomBtn && phantomBtn instanceof HTMLElement) {
+                          phantomBtn.click();
+                        }
+                      }, 300);
+                    } else {
+                      // Fallback for direct wallet connection if button is not in DOM
+                      if (window.solana && window.solana.connect) {
+                        window.solana.connect();
+                      } else {
+                        console.error('Phantom wallet not detected');
+                        alert('Please install Phantom wallet from https://phantom.app/');
                       }
-                    }, 100);
+                    }
                   };
                   
-                  // Invoke our opener function
-                  openWalletModal();
+                  connectPhantomWallet();
                 } catch (error) {
                   console.error("Error connecting wallet:", error);
                   // Fallback to direct modal creation

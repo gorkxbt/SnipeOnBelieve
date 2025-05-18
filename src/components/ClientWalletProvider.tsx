@@ -43,7 +43,7 @@ const ClientWalletProvider: FC<Props> = ({ children }) => {
     setMounted(true);
     
     // Define global error handler for wallet issues
-    window.addEventListener('unhandledrejection', (event) => {
+    window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
       if (event.reason?.message?.includes('wallet')) {
         console.error('Wallet connection error:', event.reason);
       }
@@ -58,7 +58,7 @@ const ClientWalletProvider: FC<Props> = ({ children }) => {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider 
         wallets={wallets} 
-        autoConnect={false} 
+        autoConnect={true} 
         onError={(error) => {
           console.error("Wallet error:", error);
           // Display an error notification if needed
