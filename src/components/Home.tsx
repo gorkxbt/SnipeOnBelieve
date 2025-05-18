@@ -79,7 +79,7 @@ const Home = () => {
             Advanced token sniping for Meteora pools on BelieveApp
           </p>
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="/#dashboard" className="btn-primary">
+            <Link href="/dashboard" className="btn-primary">
               Launch App
             </Link>
             <Link href="/whitepaper" className="btn-secondary">
@@ -202,45 +202,21 @@ const Home = () => {
             <div>
               <h3 className="font-bold text-dark dark:text-white mb-3">Distribution Model</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                100% bonding curve allocation model with the following breakdown:
+                100% bonding curve allocation on Pumpfun with team funded by platform fees.
               </p>
               <div className="space-y-3">
                 <div>
                   <div className="flex justify-between text-sm mb-1">
                     <span className="text-dark dark:text-white">Community</span>
-                    <span className="text-dark dark:text-white">70%</span>
+                    <span className="text-dark dark:text-white">100%</span>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div className="bg-secondary h-2 rounded-full" style={{ width: '70%' }}></div>
+                    <div className="bg-secondary h-2 rounded-full" style={{ width: '100%' }}></div>
                   </div>
                 </div>
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-dark dark:text-white">Development</span>
-                    <span className="text-dark dark:text-white">15%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div className="bg-secondary h-2 rounded-full" style={{ width: '15%' }}></div>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-dark dark:text-white">Treasury</span>
-                    <span className="text-dark dark:text-white">10%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div className="bg-secondary h-2 rounded-full" style={{ width: '10%' }}></div>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-dark dark:text-white">Team</span>
-                    <span className="text-dark dark:text-white">5%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div className="bg-secondary h-2 rounded-full" style={{ width: '5%' }}></div>
-                  </div>
-                </div>
+                <p className="text-gray-600 dark:text-gray-400 mt-4">
+                  The SnipeOnBelieve team will be compensated exclusively through fees collected from the platform's operations, ensuring alignment with the community's success.
+                </p>
               </div>
             </div>
           </div>

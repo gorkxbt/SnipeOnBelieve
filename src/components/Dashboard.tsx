@@ -21,6 +21,17 @@ interface UserBalances {
   positions: TokenPosition[];
 }
 
+interface ActiveSnipe {
+  target: string;
+  type: string;
+  amount: string;
+  slippage: string;
+  status: string;
+  created: string;
+  priority: string;
+  pool: string;
+}
+
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('newPairs');
   const [hasAccessTokens, setHasAccessTokens] = useState(false);
@@ -35,6 +46,53 @@ const Dashboard = () => {
     sob: '0.00',
     positions: []
   });
+  
+  // State for button interactions
+  const [isSnipeEnabled, setIsSnipeEnabled] = useState(false);
+  const [isDirectSnipeSet, setIsDirectSnipeSet] = useState(false);
+  const [snipeFeedback, setSnipeFeedback] = useState('');
+  const [monitoringFeedback, setMonitoringFeedback] = useState('');
+  const [xAccountValue, setXAccountValue] = useState('');
+  const [snipeAmount, setSnipeAmount] = useState('0.1');
+  const [slippageTolerance, setSlippageTolerance] = useState('2.5');
+  const [priority, setPriority] = useState('Medium');
+  const [tokenTickerValue, setTokenTickerValue] = useState('');
+  const [directSnipeAmount, setDirectSnipeAmount] = useState('0.1');
+  const [directSnipeSlippage, setDirectSnipeSlippage] = useState('2.5');
+  const [gasOptimization, setGasOptimization] = useState(3);
+  const [activeSnipes, setActiveSnipes] = useState<ActiveSnipe[]>([
+    {
+      target: '@SolanaProject',
+      type: 'X Account',
+      amount: '0.5 SOL',
+      slippage: '2.5%',
+      status: 'Monitoring',
+      created: '2 hours ago',
+      priority: 'High',
+      pool: 'Meteora',
+    },
+    {
+      target: '$NEWTOKEN',
+      type: 'Direct Snipe',
+      amount: '0.2 SOL',
+      slippage: '3.0%',
+      status: 'Pending',
+      created: '30 minutes ago',
+      priority: 'Medium',
+      pool: 'Meteora',
+    },
+    {
+      target: '@BelieveDevs',
+      type: 'X Account',
+      amount: '0.75 SOL',
+      slippage: '2.0%',
+      status: 'Monitoring',
+      created: '1 hour ago',
+      priority: 'High',
+      pool: 'Meteora',
+    }
+  ]);
+  
   const wallet = useWallet();
   const { theme } = useTheme();
   
@@ -246,39 +304,110 @@ const Dashboard = () => {
     },
   ];
 
-  // Mock active snipes data
-  const activeSnipes = [
-    {
-      target: '@SolanaProject',
-      type: 'X Account',
-      amount: '0.5 SOL',
-      slippage: '2.5%',
-      status: 'Monitoring',
-      created: '2 hours ago',
-      priority: 'High',
-      pool: 'Meteora',
-    },
-    {
-      target: '$NEWTOKEN',
-      type: 'Direct Snipe',
-      amount: '0.2 SOL',
-      slippage: '3.0%',
-      status: 'Pending',
-      created: '30 minutes ago',
-      priority: 'Medium',
-      pool: 'Meteora',
-    },
-    {
-      target: '@BelieveDevs',
-      type: 'X Account',
-      amount: '0.75 SOL',
-      slippage: '2.0%',
-      status: 'Monitoring',
-      created: '1 hour ago',
-      priority: 'High',
-      pool: 'Meteora',
+  // Event handlers for buttons
+  const handleEnableMonitoring = () => {
+    if (!xAccountValue) {
+      setMonitoringFeedback('Please enter an X account handle');
+      return;
     }
-  ];
+    
+    if (parseFloat(snipeAmount) <= 0) {
+      setMonitoringFeedback('Please enter a valid amount to snipe');
+      return;
+    }
+    
+    setIsSnipeEnabled(true);
+    setCurrentlySnipingCount(prev => prev + 1);
+    setMonitoringFeedback(`Monitoring enabled for @${xAccountValue}`);
+    
+    // Add to active snipes
+    const newSnipe: ActiveSnipe = {
+      target: `@${xAccountValue}`,
+      type: 'X Account',
+      amount: `${snipeAmount} SOL`,
+      slippage: `${slippageTolerance}%`,
+      status: 'Monitoring',
+      created: 'Just now',
+      priority: priority,
+      pool: 'Meteora'
+    };
+    
+    setActiveSnipes(prev => [...prev, newSnipe]);
+  };
+  
+  const handleSetDirectSnipe = () => {
+    if (!tokenTickerValue) {
+      setSnipeFeedback('Please enter a token ticker or name');
+      return;
+    }
+    
+    if (parseFloat(directSnipeAmount) <= 0) {
+      setSnipeFeedback('Please enter a valid amount to snipe');
+      return;
+    }
+    
+    setIsDirectSnipeSet(true);
+    setCurrentlySnipingCount(prev => prev + 1);
+    setSnipeFeedback(`Snipe set for ${tokenTickerValue}`);
+    
+    // Add to active snipes
+    const newSnipe: ActiveSnipe = {
+      target: tokenTickerValue,
+      type: 'Direct Snipe',
+      amount: `${directSnipeAmount} SOL`,
+      slippage: `${directSnipeSlippage}%`,
+      status: 'Pending',
+      created: 'Just now',
+      priority: 'Medium',
+      pool: 'Meteora'
+    };
+    
+    setActiveSnipes(prev => [...prev, newSnipe]);
+  };
+  
+  const handleSnipeToken = (tokenName: string) => {
+    // Simulate a snipe action
+    const tokenToSnipe = tokens.find(t => t.name === tokenName);
+    if (!tokenToSnipe) return;
+    
+    setActiveTab('sniper');
+    setTokenTickerValue(tokenToSnipe.ticker);
+    // Scroll to the sniper section
+    setTimeout(() => {
+      const sniperSection = document.querySelector('[data-section="sniper"]');
+      if (sniperSection) {
+        sniperSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+  
+  const handleCancelSnipe = (target: string) => {
+    // Remove from active snipes
+    setActiveSnipes(prev => prev.filter(snipe => snipe.target !== target));
+    setCurrentlySnipingCount(prev => Math.max(0, prev - 1));
+  };
+  
+  const handleSellPosition = (token: string) => {
+    // Simulate selling a position
+    alert(`Selling ${token} position...`);
+    
+    // Remove from positions
+    const newPositions = userBalances.positions.filter(pos => pos.token !== token);
+    setUserBalances(prev => ({
+      ...prev,
+      positions: newPositions
+    }));
+    
+    // Update profit
+    const position = userBalances.positions.find(pos => pos.token === token);
+    if (position) {
+      const profit = position.profitValue.startsWith('+') 
+        ? parseFloat(position.profitValue.substring(1).split(' ')[0])
+        : 0;
+      
+      setTotalProfit(`${(parseFloat(totalProfit.split(' ')[0]) + profit).toFixed(2)} SOL`);
+    }
+  };
   
   return (
     <section id="dashboard" className="py-24 bg-light dark:bg-dark-bg">
@@ -483,7 +612,7 @@ const Dashboard = () => {
                             <td className="py-4">
                               <button 
                                 className="bg-secondary text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-all"
-                                onClick={() => setActiveTab('sniper')}
+                                onClick={() => handleSnipeToken(token.name)}
                               >
                                 Snipe
                               </button>
@@ -559,11 +688,17 @@ const Dashboard = () => {
               )}
               
               {activeTab === 'sniper' && (
-                <div className="px-6 py-6">
+                <div className="px-6 py-6" data-section="sniper">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="bg-gray-50 dark:bg-dark-surface/60 rounded-lg p-6">
                       <h3 className="font-bold text-dark dark:text-white mb-4">X Account Monitoring</h3>
                       <p className="text-gray-600 dark:text-gray-400 mb-4">Enter the handle of any X (Twitter) account. We will monitor this account for token deployment announcements from BelieveApp.</p>
+                      
+                      {monitoringFeedback && (
+                        <div className={`p-3 mb-4 rounded-md ${isSnipeEnabled ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
+                          {monitoringFeedback}
+                        </div>
+                      )}
                       
                       <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">X Account Handle</label>
@@ -571,18 +706,41 @@ const Dashboard = () => {
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <span className="text-gray-500 sm:text-sm">@</span>
                           </div>
-                          <input type="text" className="focus:ring-secondary focus:border-secondary block w-full pl-7 pr-12 sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" placeholder="solanaproject" />
+                          <input 
+                            type="text" 
+                            className="focus:ring-secondary focus:border-secondary block w-full pl-7 pr-12 sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" 
+                            placeholder="solanaproject" 
+                            value={xAccountValue}
+                            onChange={(e) => setXAccountValue(e.target.value)}
+                          />
                         </div>
                       </div>
                       
                       <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount to Snipe (SOL)</label>
-                        <input type="number" min="0.01" step="0.01" className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" placeholder="0.1" />
+                        <input 
+                          type="number" 
+                          min="0.01" 
+                          step="0.01" 
+                          className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" 
+                          placeholder="0.1" 
+                          value={snipeAmount}
+                          onChange={(e) => setSnipeAmount(e.target.value)}
+                        />
                       </div>
                       
                       <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slippage Tolerance (%)</label>
-                        <input type="number" min="0.1" max="100" step="0.1" className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" placeholder="2.5" />
+                        <input 
+                          type="number" 
+                          min="0.1" 
+                          max="100" 
+                          step="0.1" 
+                          className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" 
+                          placeholder="2.5" 
+                          value={slippageTolerance}
+                          onChange={(e) => setSlippageTolerance(e.target.value)}
+                        />
                       </div>
                       
                       <div className="mb-6">
@@ -590,43 +748,84 @@ const Dashboard = () => {
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
                           <div className="ml-auto text-xs text-secondary">Meteora Pool</div>
                         </div>
-                        <select className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white">
+                        <select 
+                          className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white"
+                          value={priority}
+                          onChange={(e) => setPriority(e.target.value)}
+                        >
                           <option>Medium</option>
                           <option>High</option>
                           <option>Low</option>
                         </select>
                       </div>
                       
-                      <button className="w-full btn-primary">Enable Monitoring</button>
+                      <button 
+                        className={`w-full ${isSnipeEnabled ? 'bg-gray-400 dark:bg-gray-700 cursor-not-allowed' : 'btn-primary'}`}
+                        onClick={handleEnableMonitoring}
+                        disabled={isSnipeEnabled}
+                      >
+                        {isSnipeEnabled ? 'Monitoring Enabled' : 'Enable Monitoring'}
+                      </button>
                     </div>
                     
                     <div className="bg-gray-50 dark:bg-dark-surface/60 rounded-lg p-6">
                       <h3 className="font-bold text-dark dark:text-white mb-4">Direct Snipe by Ticker or Name</h3>
                       <p className="text-gray-600 dark:text-gray-400 mb-4">If you know the $ticker or name of an upcoming BelieveApp Meteora pool, set up a snipe in advance.</p>
                       
+                      {snipeFeedback && (
+                        <div className={`p-3 mb-4 rounded-md ${isDirectSnipeSet ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
+                          {snipeFeedback}
+                        </div>
+                      )}
+                      
                       <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Token Ticker or Name</label>
-                        <input type="text" className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" placeholder="$EXAMPLE" />
+                        <input 
+                          type="text" 
+                          className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" 
+                          placeholder="$EXAMPLE" 
+                          value={tokenTickerValue}
+                          onChange={(e) => setTokenTickerValue(e.target.value)}
+                        />
                       </div>
                       
                       <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount to Snipe (SOL)</label>
-                        <input type="number" min="0.01" step="0.01" className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" placeholder="0.1" />
+                        <input 
+                          type="number" 
+                          min="0.01" 
+                          step="0.01" 
+                          className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" 
+                          placeholder="0.1" 
+                          value={directSnipeAmount}
+                          onChange={(e) => setDirectSnipeAmount(e.target.value)}
+                        />
                       </div>
                       
                       <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slippage Tolerance (%)</label>
-                        <input type="number" min="0.1" max="100" step="0.1" className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" placeholder="2.5" />
+                        <input 
+                          type="number" 
+                          min="0.1" 
+                          max="100" 
+                          step="0.1" 
+                          className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" 
+                          placeholder="2.5" 
+                          value={directSnipeSlippage}
+                          onChange={(e) => setDirectSnipeSlippage(e.target.value)}
+                        />
                       </div>
                       
                       <div className="mb-6">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Gas Optimization</label>
                         <div className="mt-1 flex items-center space-x-4">
                           <span className="text-sm text-gray-700 dark:text-gray-300">Lower</span>
-                          <input type="range" 
+                          <input 
+                            type="range" 
                             min="1" 
                             max="5" 
-                            value="3" 
+                            value={gasOptimization} 
+                            onChange={(e) => setGasOptimization(parseInt(e.target.value))}
                             className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer" 
                           />
                           <span className="text-sm text-gray-700 dark:text-gray-300">Higher</span>
@@ -634,7 +833,13 @@ const Dashboard = () => {
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Higher gas ensures faster transaction execution</p>
                       </div>
                       
-                      <button className="w-full btn-primary">Set Snipe</button>
+                      <button 
+                        className={`w-full ${isDirectSnipeSet ? 'bg-gray-400 dark:bg-gray-700 cursor-not-allowed' : 'btn-primary'}`}
+                        onClick={handleSetDirectSnipe}
+                        disabled={isDirectSnipeSet}
+                      >
+                        {isDirectSnipeSet ? 'Snipe Set' : 'Set Snipe'}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -682,7 +887,10 @@ const Dashboard = () => {
                               </td>
                               <td className="py-4 text-gray-500 dark:text-gray-400 text-sm">{snipe.created}</td>
                               <td className="py-4">
-                                <button className="text-red-500 hover:text-red-700 dark:hover:text-red-400 text-xs font-medium">
+                                <button 
+                                  className="text-red-500 hover:text-red-700 dark:hover:text-red-400 text-xs font-medium"
+                                  onClick={() => handleCancelSnipe(snipe.target)}
+                                >
                                   Cancel
                                 </button>
                               </td>
@@ -805,7 +1013,10 @@ const Dashboard = () => {
                               </div>
                             </td>
                             <td className="py-4">
-                              <button className="bg-secondary text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-all">
+                              <button 
+                                className="bg-secondary text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-all"
+                                onClick={() => handleSellPosition(position.token)}
+                              >
                                 Sell
                               </button>
                             </td>

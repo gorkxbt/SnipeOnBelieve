@@ -30,10 +30,10 @@ const Header = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-6">
-            <Link href="/#features" className="nav-link dark:text-gray-300 dark:hover:text-secondary">
+            <Link href="/" className="nav-link dark:text-gray-300 dark:hover:text-secondary">
               Home
             </Link>
-            <Link href="/#dashboard" className="nav-link dark:text-gray-300 dark:hover:text-secondary">
+            <Link href="/dashboard" className="nav-link dark:text-gray-300 dark:hover:text-secondary">
               Dashboard
             </Link>
             <Link href="/whitepaper" className="nav-link dark:text-gray-300 dark:hover:text-secondary">
@@ -78,14 +78,14 @@ const Header = () => {
           <div className="md:hidden py-4">
             <div className="flex flex-col space-y-4">
               <Link 
-                href="/#features" 
+                href="/" 
                 onClick={() => setIsMenuOpen(false)}
                 className="nav-link dark:text-gray-300 dark:hover:text-secondary"
               >
                 Home
               </Link>
               <Link 
-                href="/#dashboard" 
+                href="/dashboard" 
                 onClick={() => setIsMenuOpen(false)}
                 className="nav-link dark:text-gray-300 dark:hover:text-secondary"
               >
