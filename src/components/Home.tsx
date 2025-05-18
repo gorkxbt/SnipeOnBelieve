@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useTheme } from '@/lib/ThemeContext';
 
 const Home = () => {
   const { theme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
+  const [tokenomicsVisible, setTokenomicsVisible] = useState(false);
+  const tokenomicsRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     // Create animated background
@@ -64,100 +66,124 @@ const Home = () => {
     
     // Recreate particles every 3 seconds
     const interval = setInterval(createParticles, 3000);
+
+    // Set up intersection observer for tokenomics section
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setTokenomicsVisible(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (tokenomicsRef.current) {
+      observer.observe(tokenomicsRef.current);
+    }
     
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      observer.disconnect();
+    };
   }, []);
 
   return (
     <section className="pt-32 pb-20 bg-gradient-to-b from-light to-gray-50 dark:from-dark-bg dark:to-dark-surface relative" ref={containerRef}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16 animate-fadeIn">
-          <h1 className="text-4xl md:text-6xl font-bold text-dark dark:text-white mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold text-dark dark:text-white mb-6 relative inline-block">
             Snipe<span className="text-secondary">On</span>Believe
+            <div className="absolute -bottom-2 w-full h-1 bg-secondary rounded-full transform scale-x-0 animate-expand"></div>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mt-6 animate-slideUp" style={{ animationDelay: '300ms' }}>
             Advanced token sniping for Meteora pools on BelieveApp
           </p>
-          <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="/dashboard" className="btn-primary">
+          <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4 animate-fadeIn" style={{ animationDelay: '600ms' }}>
+            <Link href="/dashboard" className="btn-primary transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
               Launch App
             </Link>
-            <Link href="/whitepaper" className="btn-secondary">
+            <Link href="/whitepaper" className="btn-secondary transform transition-all duration-300 hover:scale-105">
               Documentation
             </Link>
           </div>
         </div>
 
         {/* Key features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border transform transition-all duration-300 hover:scale-105 hover:shadow-md animate-fadeIn" style={{ animationDelay: '200ms' }}>
-            <div className="text-secondary text-3xl mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+          <div className="bg-white dark:bg-dark-surface rounded-xl p-8 shadow-md border border-gray-100 dark:border-dark-border transform transition-all duration-500 hover:scale-105 hover:shadow-xl animate-fadeIn" style={{ animationDelay: '200ms' }}>
+            <div className="text-secondary text-3xl mb-4 bg-secondary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-dark dark:text-white mb-2">Real-Time Sniping</h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <h3 className="text-xl font-bold text-dark dark:text-white mb-3 text-center">Real-Time Sniping</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-center">
               Instantly detect and snipe new Meteora pools on BelieveApp launchpad with market-leading execution speed.
             </p>
           </div>
           
-          <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border transform transition-all duration-300 hover:scale-105 hover:shadow-md animate-fadeIn" style={{ animationDelay: '400ms' }}>
-            <div className="text-secondary text-3xl mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="bg-white dark:bg-dark-surface rounded-xl p-8 shadow-md border border-gray-100 dark:border-dark-border transform transition-all duration-500 hover:scale-105 hover:shadow-xl animate-fadeIn" style={{ animationDelay: '400ms' }}>
+            <div className="text-secondary text-3xl mb-4 bg-secondary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-dark dark:text-white mb-2">Advanced Analytics</h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <h3 className="text-xl font-bold text-dark dark:text-white mb-3 text-center">Advanced Analytics</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-center">
               Track performance, analyze token metrics, and make data-driven decisions with our comprehensive dashboard.
             </p>
           </div>
           
-          <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border transform transition-all duration-300 hover:scale-105 hover:shadow-md animate-fadeIn" style={{ animationDelay: '600ms' }}>
-            <div className="text-secondary text-3xl mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="bg-white dark:bg-dark-surface rounded-xl p-8 shadow-md border border-gray-100 dark:border-dark-border transform transition-all duration-500 hover:scale-105 hover:shadow-xl animate-fadeIn" style={{ animationDelay: '600ms' }}>
+            <div className="text-secondary text-3xl mb-4 bg-secondary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-dark dark:text-white mb-2">Secure & Private</h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <h3 className="text-xl font-bold text-dark dark:text-white mb-3 text-center">Secure & Private</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-center">
               Your funds and data stay secure with non-custodial infrastructure and complete privacy protection.
             </p>
           </div>
         </div>
 
         {/* How it works */}
-        <div className="bg-white dark:bg-dark-surface rounded-xl p-8 shadow-sm border border-gray-100 dark:border-dark-border mb-16 animate-fadeIn" style={{ animationDelay: '800ms' }}>
-          <h2 className="text-2xl md:text-3xl font-bold text-dark dark:text-white mb-6 text-center">How It Works</h2>
+        <div className="bg-white dark:bg-dark-surface rounded-xl p-10 shadow-lg border border-gray-100 dark:border-dark-border mb-20 animate-fadeIn" style={{ animationDelay: '800ms' }}>
+          <h2 className="text-2xl md:text-3xl font-bold text-dark dark:text-white mb-10 text-center relative inline-block">
+            How It Works
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-secondary rounded-full"></div>
+          </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="bg-secondary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-secondary font-bold text-xl">1</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            {/* Connecting line */}
+            <div className="hidden md:block absolute top-14 left-[20%] right-[20%] h-0.5 bg-secondary z-0"></div>
+            
+            <div className="text-center relative z-10">
+              <div className="bg-secondary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-secondary transform transition-all duration-300 hover:scale-110">
+                <span className="text-secondary font-bold text-2xl">1</span>
               </div>
-              <h3 className="font-bold text-dark dark:text-white mb-2">Connect Wallet</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
+              <h3 className="font-bold text-dark dark:text-white mb-3 text-xl">Connect Wallet</h3>
+              <p className="text-gray-600 dark:text-gray-400">
                 Link your Solana wallet and hold at least 1,000 $SOB tokens to access the platform.
               </p>
             </div>
             
-            <div className="text-center">
-              <div className="bg-secondary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-secondary font-bold text-xl">2</span>
+            <div className="text-center relative z-10">
+              <div className="bg-secondary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-secondary transform transition-all duration-300 hover:scale-110">
+                <span className="text-secondary font-bold text-2xl">2</span>
               </div>
-              <h3 className="font-bold text-dark dark:text-white mb-2">Configure Sniper</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
+              <h3 className="font-bold text-dark dark:text-white mb-3 text-xl">Configure Sniper</h3>
+              <p className="text-gray-600 dark:text-gray-400">
                 Set up monitoring for X accounts or specific tokens from BelieveApp with your desired parameters.
               </p>
             </div>
             
-            <div className="text-center">
-              <div className="bg-secondary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-secondary font-bold text-xl">3</span>
+            <div className="text-center relative z-10">
+              <div className="bg-secondary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-secondary transform transition-all duration-300 hover:scale-110">
+                <span className="text-secondary font-bold text-2xl">3</span>
               </div>
-              <h3 className="font-bold text-dark dark:text-white mb-2">Auto-Snipe & Profit</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
+              <h3 className="font-bold text-dark dark:text-white mb-3 text-xl">Auto-Snipe & Profit</h3>
+              <p className="text-gray-600 dark:text-gray-400">
                 Our system automatically detects and snipes new Meteora pools according to your settings.
               </p>
             </div>
@@ -165,58 +191,105 @@ const Home = () => {
         </div>
 
         {/* Tokenomics */}
-        <div className="bg-white dark:bg-dark-surface rounded-xl p-8 shadow-sm border border-gray-100 dark:border-dark-border animate-fadeIn" style={{ animationDelay: '1000ms' }}>
-          <h2 className="text-2xl md:text-3xl font-bold text-dark dark:text-white mb-6 text-center">$SOB Tokenomics</h2>
+        <div 
+          ref={tokenomicsRef}
+          className={`bg-white dark:bg-dark-surface rounded-xl p-10 shadow-lg border border-gray-100 dark:border-dark-border ${tokenomicsVisible ? 'animate-fadeIn' : 'opacity-0'}`}
+          style={{ animationDelay: '1000ms' }}
+        >
+          <h2 className="text-2xl md:text-3xl font-bold text-dark dark:text-white mb-10 text-center">
+            <span className="relative inline-block">
+              $SOB Tokenomics
+              <div className="absolute -bottom-2 left-0 w-full h-1 bg-secondary rounded-full"></div>
+            </span>
+          </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="font-bold text-dark dark:text-white mb-3">Token Utility</h3>
-              <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                <li className="flex items-start">
-                  <svg className="h-5 w-5 text-secondary mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="flex flex-col justify-center">
+              <h3 className="font-bold text-dark dark:text-white mb-5 text-xl flex items-center">
+                <span className="bg-secondary/10 text-secondary rounded-full w-8 h-8 flex items-center justify-center mr-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>
+                </span>
+                Token Utility
+              </h3>
+              <ul className="space-y-4 text-gray-600 dark:text-gray-400">
+                <li className="flex items-start transform transition-all duration-300 hover:translate-x-2">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-secondary/10 flex items-center justify-center mt-0.5 mr-3">
+                    <svg className="h-3.5 w-3.5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
                   <span>Platform access (minimum 1,000 $SOB)</span>
                 </li>
-                <li className="flex items-start">
-                  <svg className="h-5 w-5 text-secondary mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                <li className="flex items-start transform transition-all duration-300 hover:translate-x-2">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-secondary/10 flex items-center justify-center mt-0.5 mr-3">
+                    <svg className="h-3.5 w-3.5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
                   <span>Governance voting rights</span>
                 </li>
-                <li className="flex items-start">
-                  <svg className="h-5 w-5 text-secondary mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                <li className="flex items-start transform transition-all duration-300 hover:translate-x-2">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-secondary/10 flex items-center justify-center mt-0.5 mr-3">
+                    <svg className="h-3.5 w-3.5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
                   <span>Fee reductions (tiered by holdings)</span>
                 </li>
-                <li className="flex items-start">
-                  <svg className="h-5 w-5 text-secondary mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                <li className="flex items-start transform transition-all duration-300 hover:translate-x-2">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-secondary/10 flex items-center justify-center mt-0.5 mr-3">
+                    <svg className="h-3.5 w-3.5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
                   <span>Revenue sharing to stakers</span>
                 </li>
               </ul>
             </div>
             
-            <div>
-              <h3 className="font-bold text-dark dark:text-white mb-3">Distribution Model</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                100% bonding curve allocation on Pumpfun with team funded by platform fees.
-              </p>
-              <div className="space-y-3">
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
+            <div className="flex flex-col justify-center">
+              <h3 className="font-bold text-dark dark:text-white mb-5 text-xl flex items-center">
+                <span className="bg-secondary/10 text-secondary rounded-full w-8 h-8 flex items-center justify-center mr-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </span>
+                Distribution Model
+              </h3>
+              <div className="rounded-xl p-6 bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/20 transform transition-all duration-500 hover:shadow-lg hover:from-secondary/10 hover:to-secondary/20">
+                <div className="mb-4">
+                  <div className="flex justify-between text-sm mb-2 font-medium">
                     <span className="text-dark dark:text-white">Community</span>
-                    <span className="text-dark dark:text-white">100%</span>
+                    <span className="text-secondary font-bold">100%</span>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div className="bg-secondary h-2 rounded-full" style={{ width: '100%' }}></div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                    <div 
+                      className="bg-secondary h-full rounded-full transition-all duration-1000 ease-out" 
+                      style={{ 
+                        width: tokenomicsVisible ? '100%' : '0%', 
+                        transition: 'width 1.5s ease-out',
+                      }}
+                    ></div>
                   </div>
                 </div>
-                <p className="text-gray-600 dark:text-gray-400 mt-4">
-                  The SnipeOnBelieve team will be compensated exclusively through fees collected from the platform's operations, ensuring alignment with the community's success.
-                </p>
+                <div className="bg-white dark:bg-dark-surface rounded-lg p-4 shadow-sm border border-gray-100 dark:border-dark-border">
+                  <h4 className="font-medium text-dark dark:text-white mb-3 flex items-center">
+                    <svg className="h-5 w-5 text-secondary mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Team Compensation
+                  </h4>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    The SnipeOnBelieve team will be compensated exclusively through fees collected from the platform's operations, ensuring alignment with the community's success.
+                  </p>
+                  <div className="mt-4 flex items-center">
+                    <span className="bg-secondary/10 text-secondary px-2 py-1 rounded text-xs font-medium">
+                      100% PumpFun Bonding Curve
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -238,9 +311,28 @@ const Home = () => {
           to { opacity: 1; transform: translateY(0); }
         }
         
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes expand {
+          from { transform: scaleX(0); }
+          to { transform: scaleX(1); }
+        }
+        
         .animate-fadeIn {
           animation: fadeIn 0.8s ease-out forwards;
           opacity: 0;
+        }
+        
+        .animate-slideUp {
+          animation: slideUp 0.8s ease-out forwards;
+          opacity: 0;
+        }
+        
+        .animate-expand {
+          animation: expand 1s ease-out forwards 0.5s;
         }
       `}</style>
     </section>

@@ -427,7 +427,18 @@ const Dashboard = () => {
             <p className="text-gray-600 dark:text-gray-400 mb-6">
               Connect your Solana wallet to access the sniping tools.
             </p>
-            <button className="btn-primary" onClick={() => window.dispatchEvent(new Event('wallet-connect-click'))}>
+            <button 
+              className="btn-primary bg-secondary hover:bg-opacity-90 text-white font-semibold py-2 px-6 rounded-full transition-all"
+              onClick={() => {
+                // Trigger the wallet connect modal directly
+                const walletBtn = document.querySelector('.wallet-adapter-button-trigger') as HTMLButtonElement;
+                if (walletBtn) {
+                  walletBtn.click();
+                } else {
+                  window.dispatchEvent(new Event('wallet-connect-click'));
+                }
+              }}
+            >
               Connect Wallet
             </button>
           </div>

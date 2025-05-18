@@ -16,9 +16,9 @@ module.exports = {
         light: '#FFFFFF',           // White
         'believe-gray': '#6B7280',  // Secondary text
         'believe-light': '#F9FAFB', // Light background
-        'dark-bg': '#111827',       // Dark mode background
-        'dark-surface': '#1F2937',  // Dark mode surface
-        'dark-border': '#374151',   // Dark mode border
+        'dark-bg': '#000000',       // Dark mode background (true black)
+        'dark-surface': '#121212',  // Dark mode surface (near black)
+        'dark-border': '#1E1E1E',   // Dark mode border (dark gray)
       },
       fontFamily: {
         sans: ['Open Runde', 'Inter', 'ui-sans-serif', 'system-ui'],
