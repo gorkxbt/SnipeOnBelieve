@@ -1,12 +1,17 @@
 'use client';
 
 import React from 'react';
-import Header from '@/components/Header';
+import dynamic from 'next/dynamic';
+
+// Import components without wallet dependencies
 import Hero from '@/components/Hero';
 import Features from '@/components/Features';
-import Dashboard from '@/components/Dashboard';
 import TokenSection from '@/components/TokenSection';
-import Footer from '@/components/Footer';
+
+// Dynamically import components with wallet dependencies
+const Header = dynamic(() => import('@/components/Header'), { ssr: false });
+const Dashboard = dynamic(() => import('@/components/Dashboard'), { ssr: false });
+const Footer = dynamic(() => import('@/components/Footer'), { ssr: false });
 
 export default function Home() {
   return (
