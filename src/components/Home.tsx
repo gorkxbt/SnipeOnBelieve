@@ -156,7 +156,7 @@ const Home = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
             {/* Connecting line */}
-            <div className="hidden md:block absolute top-14 left-[20%] right-[20%] h-0.5 bg-secondary z-0"></div>
+            <div className="hidden md:block absolute top-14 left-0 right-0 h-0.5 bg-secondary z-0" style={{ width: '80%', margin: '0 auto' }}></div>
             
             <div className="text-center relative z-10">
               <div className="bg-secondary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-secondary transform transition-all duration-300 hover:scale-110">
