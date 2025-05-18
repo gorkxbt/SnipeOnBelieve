@@ -3,7 +3,7 @@
 interface Window {
   solana?: {
     isPhantom?: boolean;
-    connect: () => Promise<{ publicKey: string }>;
+    connect: (options?: { onlyIfTrusted?: boolean }) => Promise<{ publicKey: string }>;
     disconnect: () => Promise<void>;
     on: (event: string, callback: Function) => void;
     request: (request: { method: string; params?: any }) => Promise<any>;

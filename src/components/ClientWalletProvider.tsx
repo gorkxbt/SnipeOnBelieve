@@ -49,6 +49,11 @@ const ClientWalletProvider: FC<Props> = ({ children }) => {
       }
     });
     
+    // Check for Phantom wallet
+    if (typeof window !== 'undefined' && window.solana && window.solana.isPhantom) {
+      console.log('Phantom wallet detected in browser');
+    }
+    
     return () => {
       window.removeEventListener('unhandledrejection', () => {});
     };
