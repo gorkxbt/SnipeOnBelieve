@@ -916,152 +916,276 @@ const Dashboard = () => {
             </div>
           )}
           
-          {/* Live Status - Always visible */}
-          <div className="bg-white dark:bg-dark-surface rounded-xl p-3 shadow-sm border border-gray-100 dark:border-dark-border mb-8 flex items-center justify-between">
+          {/* Live Status - Redesigned with better visual indication */}
+          <div className="bg-white dark:bg-dark-surface rounded-xl p-4 shadow-sm border border-gray-100 dark:border-dark-border mb-8 flex items-center justify-between">
             <div className="flex items-center">
-              <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-              <span className="text-gray-600 dark:text-gray-400 text-sm">Live - Last scan: {wallet.connected ? lastScan : new Date().toLocaleTimeString()}</span>
+              <div className="relative mr-3">
+                <span className="inline-block w-3 h-3 bg-green-500 rounded-full"></span>
+                <span className="absolute top-0 left-0 w-3 h-3 bg-green-500 rounded-full animate-ping opacity-75"></span>
+              </div>
+              <div>
+                <span className="text-dark dark:text-white font-medium">Monitoring Status: <span className="text-green-500">Active</span></span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Last scan: {wallet.connected ? lastScan : new Date().toLocaleTimeString()}</p>
+              </div>
             </div>
-            <div className="text-gray-600 dark:text-gray-400 text-sm">
-              Watching Meteora pools on BelieveApp
+            <div className="bg-secondary/10 px-3 py-1 rounded-full text-secondary text-sm font-medium">
+              Watching Meteora pools
             </div>
           </div>
           
-          {/* Dashboard Stats - Always visible */}
+          {/* Dashboard Stats - Redesigned with improved cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-dark dark:text-white">Currently Sniping</h3>
-                <span className="text-secondary text-2xl font-bold">{wallet.connected ? currentlySnipingCount : '0'}</span>
-              </div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Active monitoring jobs</p>
-            </div>
-            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-dark dark:text-white">Success Rate</h3>
-                <div className="text-right">
-                  <span className="text-secondary text-2xl font-bold">{wallet.connected ? snipeSuccess.rate : '0%'}</span>
-                  <span className="text-gray-500 dark:text-gray-400 text-sm ml-2">({wallet.connected ? snipeSuccess.count : '0'} snipes)</span>
+            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border transition-all duration-300 hover:shadow-md overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-secondary/5 rounded-full transform translate-x-1/3 -translate-y-1/3"></div>
+              <div className="relative z-10">
+                <div className="flex items-center mb-3">
+                  <div className="bg-secondary/10 p-2 rounded-lg mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  </div>
+                  <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Currently Sniping</h3>
+                </div>
+                <div className="flex items-baseline">
+                  <span className="text-3xl font-bold text-dark dark:text-white">{wallet.connected ? currentlySnipingCount : '0'}</span>
+                  <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">active jobs</span>
                 </div>
               </div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Last 7 days performance</p>
             </div>
-            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-dark dark:text-white">Tokens Monitored</h3>
-                <span className="text-secondary text-2xl font-bold">{wallet.connected ? coinsMonitored : '--'}</span>
+            
+            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border transition-all duration-300 hover:shadow-md overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-secondary/5 rounded-full transform translate-x-1/3 -translate-y-1/3"></div>
+              <div className="relative z-10">
+                <div className="flex items-center mb-3">
+                  <div className="bg-secondary/10 p-2 rounded-lg mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Success Rate</h3>
+                </div>
+                <div className="flex items-baseline">
+                  <span className="text-3xl font-bold text-dark dark:text-white">{wallet.connected ? snipeSuccess.rate : '0%'}</span>
+                  <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">({wallet.connected ? snipeSuccess.count : '0'} trades)</span>
+                </div>
               </div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">From BelieveApp in last 24h</p>
             </div>
-            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-dark dark:text-white">Total Profit</h3>
-                <span className="text-secondary text-2xl font-bold">{wallet.connected ? totalProfit : '--'}</span>
+            
+            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border transition-all duration-300 hover:shadow-md overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-secondary/5 rounded-full transform translate-x-1/3 -translate-y-1/3"></div>
+              <div className="relative z-10">
+                <div className="flex items-center mb-3">
+                  <div className="bg-secondary/10 p-2 rounded-lg mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Tokens Monitored</h3>
+                </div>
+                <div className="flex items-baseline">
+                  <span className="text-3xl font-bold text-dark dark:text-white">{wallet.connected ? coinsMonitored : '0'}</span>
+                  <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">last 24h</span>
+                </div>
               </div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Cumulative trader profit</p>
+            </div>
+            
+            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border transition-all duration-300 hover:shadow-md overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-secondary/5 rounded-full transform translate-x-1/3 -translate-y-1/3"></div>
+              <div className="relative z-10">
+                <div className="flex items-center mb-3">
+                  <div className="bg-secondary/10 p-2 rounded-lg mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total Profit</h3>
+                </div>
+                <div className="flex items-baseline">
+                  <span className="text-3xl font-bold text-secondary">{wallet.connected ? totalProfit : '0 SOL'}</span>
+                </div>
+              </div>
             </div>
           </div>
           
-          <div className="bg-white dark:bg-dark-surface rounded-xl shadow-sm border border-gray-100 dark:border-dark-border overflow-hidden">
-            <div className="flex border-b border-gray-200 dark:border-dark-border">
+          {/* Tab Navigation - Improved with better spacing and active indicators */}
+          <div className="bg-white dark:bg-dark-surface rounded-xl shadow-md border border-gray-100 dark:border-dark-border overflow-hidden">
+            <div className="flex flex-wrap border-b border-gray-200 dark:border-dark-border">
               <button
-                className={`px-6 py-3 font-medium ${
+                className={`px-6 py-4 font-medium transition-all duration-200 ${
                   activeTab === 'newPairs'
-                    ? 'text-secondary border-b-2 border-secondary'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                    ? 'text-secondary border-b-2 border-secondary bg-secondary/5'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-dark-surface/50'
                 }`}
                 onClick={() => setActiveTab('newPairs')}
               >
-                New Pairs Feed
+                <div className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  New Pairs Feed
+                </div>
               </button>
               <button
-                className={`px-6 py-3 font-medium ${
+                className={`px-6 py-4 font-medium transition-all duration-200 ${
                   activeTab === 'active'
-                    ? 'text-secondary border-b-2 border-secondary'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                    ? 'text-secondary border-b-2 border-secondary bg-secondary/5'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-dark-surface/50'
                 }`}
                 onClick={() => setActiveTab('active')}
               >
-                Current Snipes
+                <div className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Current Snipes
+                </div>
               </button>
               <button
-                className={`px-6 py-3 font-medium ${
+                className={`px-6 py-4 font-medium transition-all duration-200 ${
                   activeTab === 'sniper'
-                    ? 'text-secondary border-b-2 border-secondary'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                    ? 'text-secondary border-b-2 border-secondary bg-secondary/5'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-dark-surface/50'
                 }`}
                 onClick={() => setActiveTab('sniper')}
               >
-                Configure Sniper
+                <div className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Configure Sniper
+                </div>
               </button>
               <button
-                className={`px-6 py-3 font-medium ${
+                className={`px-6 py-4 font-medium transition-all duration-200 ${
                   activeTab === 'graduated'
-                    ? 'text-secondary border-b-2 border-secondary'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                    ? 'text-secondary border-b-2 border-secondary bg-secondary/5'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-dark-surface/50'
                 }`}
                 onClick={() => setActiveTab('graduated')}
               >
-                Graduated Coins
+                <div className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                  </svg>
+                  Graduated Coins
+                </div>
               </button>
             </div>
             
             {/* Tab Content - Add proper closing tags */}
             {activeTab === 'newPairs' && (
-              <div className="px-6 py-6 overflow-x-auto">
+              <div className="px-6 py-6">
                 {/* New Pairs Feed Content */}
-                <div className="bg-gray-50 dark:bg-dark-surface/30 p-4 rounded-lg mb-6">
+                <div className="mb-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-lg text-dark dark:text-white">Recent Pairs from BelieveApp</h3>
-                    <div className="text-sm text-secondary">Live updating</div>
+                    <div className="flex items-center">
+                      <div className="bg-secondary/10 p-2 rounded-lg mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                      </div>
+                      <h3 className="font-bold text-lg text-dark dark:text-white">Recent Pairs from BelieveApp</h3>
+                    </div>
+                    <div className="flex items-center bg-secondary/10 px-3 py-1 rounded-full">
+                      <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                      <span className="text-secondary text-sm font-medium">Live Updating</span>
+                    </div>
                   </div>
                   
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-border">
-                      <thead className="bg-gray-100 dark:bg-dark-surface/50">
-                        <tr>
-                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Token</th>
-                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pool Size</th>
-                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Created</th>
-                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Source</th>
-                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white dark:bg-dark-surface divide-y divide-gray-200 dark:divide-dark-border">
-                        {[
-                          { token: '$SOLAR', ticker: 'SOLAR', poolSize: '124 SOL', created: '2 minutes ago', source: 'BelieveApp', logo: '🌞' },
-                          { token: '$BELIEVE', ticker: 'BLV', poolSize: '245 SOL', created: '15 minutes ago', source: 'BelieveApp', logo: '🚀' },
-                          { token: '$SNIPE', ticker: 'SNP', poolSize: '78 SOL', created: '32 minutes ago', source: 'BelieveApp', logo: '🎯' },
-                          { token: '$MEGA', ticker: 'MEGA', poolSize: '190 SOL', created: '48 minutes ago', source: 'BelieveApp', logo: '💎' },
-                          { token: '$PULSE', ticker: 'PLS', poolSize: '56 SOL', created: '1 hour ago', source: 'BelieveApp', logo: '💓' }
-                        ].map((item, i) => (
-                          <tr key={i} className="hover:bg-gray-50 dark:hover:bg-dark-surface/50 transition-colors">
-                            <td className="px-4 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="flex-shrink-0 h-10 w-10 bg-secondary/10 rounded-full flex items-center justify-center text-lg">
-                                  {item.logo}
-                                </div>
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-dark dark:text-white">{item.token}</div>
-                                  <div className="text-sm text-gray-500 dark:text-gray-400">{item.ticker}</div>
-                                </div>
+                  {/* Filter Controls */}
+                  <div className="bg-gray-50 dark:bg-dark-surface/30 p-3 rounded-lg mb-4 flex flex-wrap gap-2 items-center">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Quick Filters:</span>
+                    <button className="bg-white dark:bg-dark-surface px-3 py-1 rounded-md text-sm border border-gray-200 dark:border-dark-border shadow-sm hover:bg-secondary hover:text-white transition-colors">
+                      All Pairs
+                    </button>
+                    <button className="bg-white dark:bg-dark-surface px-3 py-1 rounded-md text-sm border border-gray-200 dark:border-dark-border shadow-sm hover:bg-secondary hover:text-white transition-colors">
+                      High Liquidity
+                    </button>
+                    <button className="bg-white dark:bg-dark-surface px-3 py-1 rounded-md text-sm border border-gray-200 dark:border-dark-border shadow-sm hover:bg-secondary hover:text-white transition-colors">
+                      New ({"<"}30min)
+                    </button>
+                    <button className="bg-white dark:bg-dark-surface px-3 py-1 rounded-md text-sm border border-gray-200 dark:border-dark-border shadow-sm hover:bg-secondary hover:text-white transition-colors">
+                      Trending
+                    </button>
+                  </div>
+                  
+                  {/* Card Grid Layout */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[
+                      { token: '$SOLAR', ticker: 'SOLAR', poolSize: '124 SOL', created: '2 minutes ago', source: 'BelieveApp', logo: '🌞' },
+                      { token: '$BELIEVE', ticker: 'BLV', poolSize: '245 SOL', created: '15 minutes ago', source: 'BelieveApp', logo: '🚀' },
+                      { token: '$SNIPE', ticker: 'SNP', poolSize: '78 SOL', created: '32 minutes ago', source: 'BelieveApp', logo: '🎯' },
+                      { token: '$MEGA', ticker: 'MEGA', poolSize: '190 SOL', created: '48 minutes ago', source: 'BelieveApp', logo: '💎' },
+                      { token: '$PULSE', ticker: 'PLS', poolSize: '56 SOL', created: '1 hour ago', source: 'BelieveApp', logo: '💓' },
+                      { token: '$SOLICE', ticker: 'SOLICE', poolSize: '112 SOL', created: '1.5 hours ago', source: 'BelieveApp', logo: '✨' }
+                    ].map((item, i) => (
+                      <div key={i} className="bg-white dark:bg-dark-surface rounded-xl border border-gray-100 dark:border-dark-border shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md hover:border-secondary/30">
+                        <div className="p-4 border-b border-gray-100 dark:border-dark-border flex items-center justify-between">
+                          <div className="flex items-center">
+                            <div className="bg-secondary/10 h-10 w-10 rounded-full flex items-center justify-center text-lg mr-3">
+                              {item.logo}
+                            </div>
+                            <div>
+                              <div className="font-bold text-dark dark:text-white">{item.token}</div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">{item.ticker}</div>
+                            </div>
+                          </div>
+                          <div className="bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-md text-xs font-medium">
+                            New Pool
+                          </div>
+                        </div>
+                        <div className="px-4 py-3">
+                          <div className="grid grid-cols-2 gap-2 mb-3">
+                            <div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Pool Size</div>
+                              <div className="font-medium text-dark dark:text-white">{item.poolSize}</div>
+                            </div>
+                            <div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Created</div>
+                              <div className="font-medium text-dark dark:text-white">{item.created}</div>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Source</div>
+                              <div className="font-medium text-dark dark:text-white flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                                {item.source}
                               </div>
-                            </td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{item.poolSize}</td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{item.created}</td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{item.source}</td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                            </div>
+                            <div>
                               <button
                                 onClick={() => handleSnipeToken(item.token)}
-                                className="text-secondary hover:text-secondary-dark transition-colors px-3 py-1 rounded-md border border-secondary hover:bg-secondary hover:text-white"
+                                className="w-full bg-secondary/10 hover:bg-secondary text-secondary hover:text-white font-medium py-1.5 px-3 rounded-md transition-all flex items-center justify-center mt-1"
                               >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
                                 Snipe
                               </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Pagination Controls */}
+                  <div className="mt-6 flex justify-between items-center">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      Showing <span className="font-medium">6</span> of <span className="font-medium">24</span> pairs
+                    </div>
+                    <div className="flex space-x-2">
+                      <button className="bg-white dark:bg-dark-surface px-3 py-1 rounded-md text-sm border border-gray-200 dark:border-dark-border shadow-sm hover:bg-gray-50 transition-colors">
+                        Previous
+                      </button>
+                      <button className="bg-secondary text-white px-3 py-1 rounded-md text-sm border border-secondary shadow-sm hover:bg-secondary/90 transition-colors">
+                        Next
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1071,61 +1195,124 @@ const Dashboard = () => {
               <div className="px-6 py-6">
                 {/* Active Snipes Content */}
                 <div className="mb-4">
-                  <h3 className="font-bold text-lg text-dark dark:text-white mb-4">Active Snipe Operations</h3>
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center">
+                      <div className="bg-secondary/10 p-2 rounded-lg mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <h3 className="font-bold text-lg text-dark dark:text-white">Active Snipe Operations</h3>
+                    </div>
+                    <div className="bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      All systems operational
+                    </div>
+                  </div>
                   
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-border">
-                      <thead className="bg-gray-100 dark:bg-dark-surface/50">
-                        <tr>
-                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Target</th>
-                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
-                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Amount/Slippage</th>
-                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Created</th>
-                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white dark:bg-dark-surface divide-y divide-gray-200 dark:divide-dark-border">
-                        {activeSnipes.map((snipe, i) => (
-                          <tr key={i} className="hover:bg-gray-50 dark:hover:bg-dark-surface/50 transition-colors">
-                            <td className="px-4 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-dark dark:text-white">{snipe.target}</div>
-                            </td>
-                            <td className="px-4 py-4 whitespace-nowrap">
-                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {activeSnipes.map((snipe, i) => (
+                      <div key={i} className="bg-white dark:bg-dark-surface rounded-xl border border-gray-100 dark:border-dark-border shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
+                        <div className="p-4 border-b border-gray-100 dark:border-dark-border flex items-center justify-between">
+                          <div className="flex items-center">
+                            <div className={`p-2 rounded-lg mr-3 ${
+                              snipe.type === 'X Account' 
+                                ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400' 
+                                : 'bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400'
+                            }`}>
+                              {snipe.type === 'X Account' ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                                </svg>
+                              ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                </svg>
+                              )}
+                            </div>
+                            <div>
+                              <div className="text-md font-bold text-dark dark:text-white">{snipe.target}</div>
+                              <div className={`text-xs ${
                                 snipe.type === 'X Account' 
-                                  ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' 
-                                  : 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
+                                  ? 'text-blue-700 dark:text-blue-400' 
+                                  : 'text-purple-700 dark:text-purple-400'
                               }`}>
                                 {snipe.type}
-                              </span>
-                            </td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
-                              {snipe.amount} / {snipe.slippage}
-                            </td>
-                            <td className="px-4 py-4 whitespace-nowrap">
-                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                snipe.status === 'Monitoring' 
-                                  ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' 
-                                  : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                              }`}>
-                                {snipe.status}
-                              </span>
-                            </td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{snipe.created}</td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
-                              <button
-                                onClick={() => handleCancelSnipe(snipe.target)}
-                                className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors"
-                              >
-                                Cancel
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                              </div>
+                            </div>
+                          </div>
+                          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            snipe.status === 'Monitoring' 
+                              ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' 
+                              : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                          }`}>
+                            {snipe.status}
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-3 p-4">
+                          <div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Amount</div>
+                            <div className="font-medium text-dark dark:text-white">{snipe.amount}</div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Slippage</div>
+                            <div className="font-medium text-dark dark:text-white">{snipe.slippage}</div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Created</div>
+                            <div className="font-medium text-dark dark:text-white">{snipe.created}</div>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 px-4 pb-4">
+                          <div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Priority</div>
+                            <div className={`text-sm font-medium px-2 py-0.5 rounded-md inline-block ${
+                              snipe.priority === 'High' 
+                                ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400' 
+                                : snipe.priority === 'Medium'
+                                ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400'
+                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400'
+                            }`}>
+                              {snipe.priority}
+                            </div>
+                          </div>
+                          <div className="flex justify-end">
+                            <button
+                              onClick={() => handleCancelSnipe(snipe.target)}
+                              className="bg-red-100 hover:bg-red-600 text-red-700 hover:text-white text-sm px-3 py-1 rounded-md transition-colors flex items-center"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
+                  
+                  {activeSnipes.length === 0 && (
+                    <div className="bg-gray-50 dark:bg-dark-surface/30 rounded-xl p-8 text-center">
+                      <div className="bg-gray-100 dark:bg-dark-surface/50 rounded-full h-16 w-16 flex items-center justify-center mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-medium text-dark dark:text-white mb-2">No Active Snipes</h3>
+                      <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-6">
+                        You don't have any active snipes at the moment. Configure a snipe using the "Configure Sniper" tab.
+                      </p>
+                      <button 
+                        onClick={() => setActiveTab('sniper')}
+                        className="bg-secondary hover:bg-secondary/90 text-white font-medium px-4 py-2 rounded-md transition-colors"
+                      >
+                        Configure a Snipe
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

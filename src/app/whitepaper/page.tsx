@@ -104,28 +104,52 @@ export default function Whitepaper() {
                   
                   <h3 className="text-xl font-bold text-dark mt-6 mb-3">2.1 Dashboard</h3>
                   <p className="mb-3">
-                    The dashboard is your command center for all activity on BelieveApp. It provides a real-time feed of new token pairs and graduated projects, with the ability to drill down into each project's details.
+                    The dashboard is your command center for all activity on BelieveApp. It provides a real-time feed of new token pairs and graduated projects, with comprehensive analytics and monitoring tools.
                   </p>
                   <ul className="list-disc pl-6 mb-4 space-y-2">
                     <li>
-                      <strong>New Pairs Feed:</strong> Instantly see every new token pair as it launches on BelieveApp. Each entry includes token name, $ticker, market cap, contract age, number of holders, volume, and a link to the project's X (Twitter) page.
+                      <strong>New Pairs Feed:</strong> Instantly see every new token pair as it launches on BelieveApp. Each entry includes token name, ticker, pool size, creation time, and source, presented in an easy-to-scan card format with quick filtering options.
+                    </li>
+                    <li>
+                      <strong>Current Snipes:</strong> Monitor all your active snipe operations in one place. View target, type (X Account or Direct Snipe), amount, slippage, status, creation time, and priority level for each active snipe.
                     </li>
                     <li>
                       <strong>Graduated Coins:</strong> Track projects that have successfully completed the launchpad process. View historical performance, price charts, and key metrics to inform your trading decisions.
                     </li>
                     <li>
-                      <strong>Advanced Filtering:</strong> Tailor your dashboard to your strategy. Filters include:
+                      <strong>Live Statistics:</strong> View real-time performance metrics including:
                       <ul className="list-circle pl-6 mt-2 space-y-1">
-                        <li>Market Cap: Set minimum and maximum thresholds to focus on projects within your risk profile.</li>
-                        <li>Contract Age: Filter by how recently a token contract was deployed, helping you spot the freshest opportunities or avoid unproven projects.</li>
-                        <li>Number of Holders: Specify a range to find projects with growing or established communities.</li>
-                        <li>X Followers: Filter by the number of followers on the project's official X account, helping you gauge social traction and potential hype.</li>
-                        <li>Volume: Set minimum and maximum volume thresholds (e.g., 24-hour volume) to identify tokens with sufficient liquidity and trading activity.</li>
+                        <li>Currently Sniping: Number of active monitoring jobs</li>
+                        <li>Success Rate: Percentage and count of successful trades</li>
+                        <li>Tokens Monitored: Total tokens being tracked from BelieveApp</li>
+                        <li>Total Profit: Cumulative trader profit</li>
                       </ul>
+                    </li>
+                    <li>
+                      <strong>Advanced Filtering:</strong> Tailor your dashboard to your strategy. Quick filters for All Pairs, High Liquidity, New pools, and Trending tokens let you focus on opportunities that match your investment criteria.
                     </li>
                   </ul>
 
-                  <h3 className="text-xl font-bold text-dark mt-6 mb-3">2.2 Sniper</h3>
+                  <h3 className="text-xl font-bold text-dark mt-6 mb-3">2.2 Sniper Wallet</h3>
+                  <p className="mb-3">
+                    The Sniper Wallet is a dedicated wallet for automated trading operations, providing a secure environment for your sniping activities separate from your main wallet.
+                  </p>
+                  <ul className="list-disc pl-6 mb-4 space-y-2">
+                    <li>
+                      <strong>Secure Generation:</strong> Create a dedicated sniper wallet with a single click, keeping your operations separate from your main funds.
+                    </li>
+                    <li>
+                      <strong>Deposit and Withdraw:</strong> Easily transfer SOL between your connected wallet and your sniper wallet as needed for operations.
+                    </li>
+                    <li>
+                      <strong>Balance Monitoring:</strong> Track your sniper wallet balance in real-time, ensuring you always have sufficient funds for automated operations.
+                    </li>
+                    <li>
+                      <strong>Enhanced Security:</strong> Private keys are encrypted and stored locally, providing both security and convenience.
+                    </li>
+                  </ul>
+
+                  <h3 className="text-xl font-bold text-dark mt-6 mb-3">2.3 Sniper Configuration</h3>
                   <p className="mb-3">
                     The Sniper module is designed for users who want to automate their entry into new tokens, maximizing speed and minimizing manual effort.
                   </p>
@@ -137,11 +161,20 @@ export default function Whitepaper() {
                       <strong>Direct Snipe by Ticker or Name:</strong> If you know the $ticker or name of an upcoming token, set up a snipe in advance. The system will monitor for the token's deployment and execute your buy order the moment it goes live.
                     </li>
                     <li>
-                      <strong>Execution Engine:</strong> All snipes are powered by Mintech's infrastructure, ensuring low-latency, reliable execution. The system is designed to handle high demand and volatile launches, giving you the best possible entry.
+                      <strong>Custom Parameters:</strong> Configure your snipe with detailed parameters:
+                      <ul className="list-circle pl-6 mt-2 space-y-1">
+                        <li>Amount: Set the exact SOL amount for each snipe</li>
+                        <li>Slippage Tolerance: Customize slippage settings to balance execution speed against price impact</li>
+                        <li>Priority Level: Choose between Low, Medium, and High priority for your snipes</li>
+                        <li>Gas Optimization: Adjust gas price strategy from fastest to cheapest</li>
+                      </ul>
+                    </li>
+                    <li>
+                      <strong>Execution Engine:</strong> All snipes are powered by our secure, high-performance infrastructure, ensuring low-latency, reliable execution. The system is designed to handle high demand and volatile launches, giving you the best possible entry.
                     </li>
                   </ul>
 
-                  <h3 className="text-xl font-bold text-dark mt-6 mb-3">2.3 Analytics</h3>
+                  <h3 className="text-xl font-bold text-dark mt-6 mb-3">2.4 Analytics</h3>
                   <ul className="list-disc pl-6 mb-4 space-y-2">
                     <li>
                       <strong>Project Insights:</strong> Access detailed analytics for each token, including price history, liquidity, holder distribution, and social metrics.
@@ -151,6 +184,9 @@ export default function Whitepaper() {
                     </li>
                     <li>
                       <strong>Market Trends:</strong> See aggregated data on launchpad activity, trending projects, and top-performing tokens.
+                    </li>
+                    <li>
+                      <strong>Visual Dashboards:</strong> Track your performance with intuitive visual indicators, real-time stats, and user-friendly metric displays.
                     </li>
                   </ul>
                 </section>
@@ -174,19 +210,22 @@ export default function Whitepaper() {
                       <strong>Purchase at least 1,000 $SOB tokens:</strong> Acquire the tokens from a supported Solana DEX and hold them in your wallet.
                     </li>
                     <li>
-                      <strong>Connect Your Wallet:</strong> Visit the SnipeOnBelieve website and connect your Solana wallet using the integrated wallet provider.
+                      <strong>Connect Your Wallet:</strong> Visit the SnipeOnBelieve website and connect your Solana wallet using the integrated Phantom wallet provider.
                     </li>
                     <li>
                       <strong>Verify Access:</strong> The platform will verify your $SOB balance. If you meet the requirement, you'll gain full access to the dashboard and sniping tools.
                     </li>
                     <li>
-                      <strong>Customize Your Dashboard:</strong> Set your preferred filters for market cap, contract age, number of holders, X followers, and volume to tailor the feed to your interests.
+                      <strong>Create a Sniper Wallet:</strong> Generate a dedicated sniper wallet for your trading operations to keep them separate from your main funds.
                     </li>
                     <li>
-                      <strong>Set Up Snipes:</strong> In the Sniper section, enter the X account you want to monitor or specify a $ticker/coin name for direct sniping.
+                      <strong>Deposit Funds:</strong> Transfer SOL from your connected wallet to your sniper wallet to fuel your sniping operations.
                     </li>
                     <li>
-                      <strong>Monitor and Act:</strong> The platform will handle monitoring and execution, notifying you of successful snipes and providing analytics on your activity.
+                      <strong>Configure Sniper Settings:</strong> In the Sniper tab, set up X account monitoring or direct token snipes with your preferred parameters.
+                    </li>
+                    <li>
+                      <strong>Monitor Your Operations:</strong> Use the dashboard to track your active snipes, review new pairs, and analyze market activity.
                     </li>
                   </ol>
                 </section>
@@ -194,27 +233,52 @@ export default function Whitepaper() {
                 <section id="user-guide" className="mb-12">
                   <h2 className="text-2xl font-bold text-dark border-b border-gray-200 pb-2 mb-4">5. User Guide</h2>
                   
-                  <h3 className="text-xl font-bold text-dark mt-6 mb-3">5.1 Dashboard Filters</h3>
+                  <h3 className="text-xl font-bold text-dark mt-6 mb-3">5.1 Managing Your Sniper Wallet</h3>
                   <ul className="list-disc pl-6 mb-4 space-y-2">
-                    <li>Market Cap: Enter minimum and maximum values to filter projects by their current market capitalization.</li>
-                    <li>Contract Age: Set a range (in hours or days) to focus on newly deployed or more established contracts.</li>
-                    <li>Number of Holders: Filter projects by the number of unique wallet holders.</li>
-                    <li>X Followers: Specify a range to see projects with a certain level of social following.</li>
-                    <li>Volume: Set minimum and maximum volume thresholds (e.g., 24-hour volume) to identify tokens with sufficient liquidity and trading activity.</li>
+                    <li><strong>Generate a Wallet:</strong> Click the "Generate Sniper Wallet" button in the Sniper Wallet section after connecting your main wallet.</li>
+                    <li><strong>View Wallet Info:</strong> Once generated, you can view your sniper wallet's public key and current balance.</li>
+                    <li><strong>Deposit Funds:</strong> Enter the amount of SOL you wish to deposit and click "Deposit to Sniper Wallet."</li>
+                    <li><strong>Withdraw Funds:</strong> To retrieve funds, enter the amount and click "Withdraw to Connected Wallet."</li>
+                    <li><strong>Security:</strong> Your wallet's private key is encrypted and stored locally for security.</li>
                   </ul>
 
-                  <h3 className="text-xl font-bold text-dark mt-6 mb-3">5.2 Setting Up a Snipe</h3>
+                  <h3 className="text-xl font-bold text-dark mt-6 mb-3">5.2 Using the Dashboard</h3>
                   <ul className="list-disc pl-6 mb-4 space-y-2">
-                    <li>X Account Monitoring: In the Sniper section, input the X account handle you wish to monitor. The platform will track this account for new token deployments and execute a snipe when detected.</li>
-                    <li>Direct Snipe: Enter the $ticker or coin name of an anticipated launch. The system will monitor for the token's deployment and execute your buy order as soon as it's live.</li>
-                    <li>Snipe Settings: Configure your snipe amount, slippage tolerance, and any additional parameters as needed.</li>
+                    <li><strong>Navigation:</strong> Use the tab navigation to switch between New Pairs Feed, Current Snipes, Configure Sniper, and Graduated Coins.</li>
+                    <li><strong>Monitoring Stats:</strong> View live statistics at the top of the dashboard to track your sniping performance.</li>
+                    <li><strong>Quick Filters:</strong> Use the filter buttons to quickly focus on specific token categories like "High Liquidity" or "New Pools."</li>
+                    <li><strong>Direct Snipe:</strong> Click the "Snipe" button on any token card in the New Pairs Feed to immediately set up a direct snipe.</li>
                   </ul>
 
-                  <h3 className="text-xl font-bold text-dark mt-6 mb-3">5.3 Reviewing Analytics</h3>
+                  <h3 className="text-xl font-bold text-dark mt-6 mb-3">5.3 Setting Up a Snipe</h3>
                   <ul className="list-disc pl-6 mb-4 space-y-2">
-                    <li>Project Analytics: Click on any token in the dashboard to view detailed analytics, including price charts, liquidity, and holder distribution.</li>
-                    <li>Sniping History: Access your personal sniping history to review past trades, entry prices, and outcomes.</li>
-                    <li>Market Trends: Explore aggregated data on launchpad activity, trending tokens, and overall market sentiment.</li>
+                    <li><strong>X Account Monitoring:</strong> In the Configure Sniper tab, enter an X account handle (without the @ symbol) in the X Account field.</li>
+                    <li><strong>Configure Parameters:</strong> 
+                      <ul className="list-circle pl-6 mt-2 space-y-1">
+                        <li>Set the SOL amount you wish to invest</li>
+                        <li>Adjust slippage tolerance percentage</li>
+                        <li>Select priority level (Low, Medium, High)</li>
+                      </ul>
+                    </li>
+                    <li><strong>Enable Monitoring:</strong> Click "Enable X Account Monitoring" to start monitoring the specified account.</li>
+                    <li><strong>Direct Token Snipe:</strong> For known upcoming tokens, enter the token ticker/name (without the $ symbol) in the Direct Token Snipe section.</li>
+                    <li><strong>Gas Settings:</strong> Adjust the Gas Optimization slider to balance between execution speed and cost efficiency.</li>
+                    <li><strong>Activate Direct Snipe:</strong> Click "Set Direct Token Snipe" to activate your snipe operation.</li>
+                  </ul>
+
+                  <h3 className="text-xl font-bold text-dark mt-6 mb-3">5.4 Managing Active Snipes</h3>
+                  <ul className="list-disc pl-6 mb-4 space-y-2">
+                    <li><strong>View Active Snipes:</strong> Navigate to the Current Snipes tab to see all your ongoing snipe operations.</li>
+                    <li><strong>Monitor Status:</strong> Check the status indicator to see if your snipe is "Monitoring" or "Pending".</li>
+                    <li><strong>View Details:</strong> Each snipe card displays comprehensive information including target, type, amount, slippage, creation time, and priority.</li>
+                    <li><strong>Cancel Operations:</strong> Click the "Cancel" button on any snipe card to immediately terminate that operation.</li>
+                  </ul>
+
+                  <h3 className="text-xl font-bold text-dark mt-6 mb-3">5.5 Reviewing Analytics</h3>
+                  <ul className="list-disc pl-6 mb-4 space-y-2">
+                    <li><strong>Performance Metrics:</strong> Track your current statistics in the dashboard header, including active snipes, success rate, monitored tokens, and total profit.</li>
+                    <li><strong>Live Status:</strong> The monitoring status indicator shows when the system is actively scanning for new opportunities.</li>
+                    <li><strong>Token Analytics:</strong> Click on individual tokens in the dashboard to view detailed performance data and metrics.</li>
                   </ul>
                 </section>
 
@@ -222,13 +286,19 @@ export default function Whitepaper() {
                   <h2 className="text-2xl font-bold text-dark border-b border-gray-200 pb-2 mb-4">6. Security and Transparency</h2>
                   <ul className="list-disc pl-6 mb-4 space-y-2">
                     <li>
-                      <strong>Powered by Mintech:</strong> All trading and sniping operations are executed on Mintech's secure, audited infrastructure, ensuring reliability and safety.
+                      <strong>Secure Sniper Wallet:</strong> Our dedicated sniper wallet system provides a secure, isolated environment for your trading operations. Private keys are encrypted and stored locally on your device, never transmitted to our servers.
                     </li>
                     <li>
-                      <strong>User Privacy:</strong> SnipeOnBelieve only accesses wallet addresses and public data necessary for platform operation. No personal information is stored or shared.
+                      <strong>Execution Security:</strong> All trading and sniping operations are executed on our secure, high-performance infrastructure, ensuring reliability and safety. Transactions are signed locally and verified before execution.
                     </li>
                     <li>
-                      <strong>Transparent Analytics:</strong> All snipes and platform activity are logged and available for user review in the analytics section, promoting transparency and trust.
+                      <strong>User Privacy:</strong> SnipeOnBelieve only accesses wallet addresses and public data necessary for platform operation. No personal information is stored or shared with third parties.
+                    </li>
+                    <li>
+                      <strong>Transparent Analytics:</strong> All snipes and platform activity are logged and available for user review in the dashboard, promoting transparency and accountability.
+                    </li>
+                    <li>
+                      <strong>Real-time Monitoring:</strong> The platform provides continuous status updates and monitoring indicators, so you always know exactly what's happening with your operations.
                     </li>
                   </ul>
                 </section>
@@ -267,13 +337,38 @@ export default function Whitepaper() {
                     </div>
                     
                     <div>
+                      <h3 className="font-bold text-dark">Q: What is the Sniper Wallet?</h3>
+                      <p>A: The Sniper Wallet is a dedicated wallet for your automated trading operations, keeping them separate from your main funds. It's secure, with private keys stored locally on your device.</p>
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-bold text-dark">Q: How do I set up an automated snipe?</h3>
+                      <p>A: Navigate to the Configure Sniper tab, choose between X Account monitoring or Direct Token Snipe, set your parameters (amount, slippage, priority), and activate the monitoring.</p>
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-bold text-dark">Q: Can I monitor multiple tokens or X accounts simultaneously?</h3>
+                      <p>A: Yes, you can set up multiple monitoring operations for different X accounts and tokens, all managed from your dashboard.</p>
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-bold text-dark">Q: How do I cancel an active snipe?</h3>
+                      <p>A: Go to the Current Snipes tab in your dashboard, find the snipe you want to cancel, and click the "Cancel" button on that card.</p>
+                    </div>
+                    
+                    <div>
                       <h3 className="font-bold text-dark">Q: What are the fees?</h3>
                       <p>A: Each transaction executed through the platform incurs a 0.3% fee, deducted automatically.</p>
                     </div>
                     
                     <div>
                       <h3 className="font-bold text-dark">Q: Is my data safe?</h3>
-                      <p>A: Yes. SnipeOnBelieve only accesses your wallet address and public data. No personal information is stored.</p>
+                      <p>A: Yes. SnipeOnBelieve only accesses your wallet address and public data. Private keys remain on your device and are never shared.</p>
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-bold text-dark">Q: What happens if I run out of SOL in my Sniper Wallet?</h3>
+                      <p>A: The platform will notify you if your balance is insufficient for a planned operation. You can easily deposit more SOL from your connected wallet.</p>
                     </div>
                     
                     <div>
