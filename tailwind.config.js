@@ -5,6 +5,7 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -15,6 +16,9 @@ module.exports = {
         light: '#FFFFFF',           // White
         'believe-gray': '#6B7280',  // Secondary text
         'believe-light': '#F9FAFB', // Light background
+        'dark-bg': '#111827',       // Dark mode background
+        'dark-surface': '#1F2937',  // Dark mode surface
+        'dark-border': '#374151',   // Dark mode border
       },
       fontFamily: {
         sans: ['Open Runde', 'Inter', 'ui-sans-serif', 'system-ui'],

@@ -1,6 +1,7 @@
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import React from 'react';
+import { ThemeProvider } from '@/lib/ThemeContext';
 
 export const metadata: Metadata = {
   title: 'SnipeOnBelieve | Analytics and Sniping for BelieveApp',
@@ -18,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

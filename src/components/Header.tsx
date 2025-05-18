@@ -3,6 +3,8 @@
 import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import ThemeToggle from './ThemeToggle';
+import { useTheme } from '@/lib/ThemeContext';
 
 // Dynamic import with error boundary fallback
 const WalletButton = dynamic(() => import('./WalletButton'), { 
@@ -12,14 +14,15 @@ const WalletButton = dynamic(() => import('./WalletButton'), {
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { theme } = useTheme();
 
   return (
-    <header className="fixed w-full z-50 bg-primary border-b border-gray-100">
+    <header className="fixed w-full z-50 bg-primary dark:bg-dark-bg border-b border-gray-100 dark:border-dark-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-3">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <span className="text-lg font-bold text-dark">
+              <span className="text-lg font-bold text-dark dark:text-white">
                 Snipe<span className="text-secondary">On</span>Believe
               </span>
             </Link>
@@ -27,32 +30,34 @@ const Header = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-6">
-            <Link href="/#features" className="nav-link">
+            <Link href="/#features" className="nav-link dark:text-gray-300 dark:hover:text-secondary">
               Home
             </Link>
-            <Link href="/#dashboard" className="nav-link">
+            <Link href="/#dashboard" className="nav-link dark:text-gray-300 dark:hover:text-secondary">
               Dashboard
             </Link>
-            <Link href="/whitepaper" className="nav-link">
+            <Link href="/whitepaper" className="nav-link dark:text-gray-300 dark:hover:text-secondary">
               Whitepaper
             </Link>
-            <Link href="/analytics" className="nav-link">
+            <Link href="/analytics" className="nav-link dark:text-gray-300 dark:hover:text-secondary">
               Analytics
             </Link>
           </nav>
           
-          {/* Connect Wallet Button */}
-          <div className="hidden md:block">
-            <Suspense fallback={<button className="btn-primary">Connect Wallet</button>}>
+          {/* Connect Wallet Button and Theme Toggle */}
+          <div className="hidden md:flex items-center">
+            <ThemeToggle />
+            <Suspense fallback={<button className="btn-primary ml-3">Connect Wallet</button>}>
               <WalletButton />
             </Suspense>
           </div>
           
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center">
+            <ThemeToggle />
             <button
               type="button"
-              className="text-dark"
+              className="text-dark dark:text-white ml-3"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
@@ -75,28 +80,28 @@ const Header = () => {
               <Link 
                 href="/#features" 
                 onClick={() => setIsMenuOpen(false)}
-                className="nav-link"
+                className="nav-link dark:text-gray-300 dark:hover:text-secondary"
               >
                 Home
               </Link>
               <Link 
                 href="/#dashboard" 
                 onClick={() => setIsMenuOpen(false)}
-                className="nav-link"
+                className="nav-link dark:text-gray-300 dark:hover:text-secondary"
               >
                 Dashboard
               </Link>
               <Link 
                 href="/whitepaper" 
                 onClick={() => setIsMenuOpen(false)}
-                className="nav-link"
+                className="nav-link dark:text-gray-300 dark:hover:text-secondary"
               >
                 Whitepaper
               </Link>
               <Link 
                 href="/analytics" 
                 onClick={() => setIsMenuOpen(false)}
-                className="nav-link"
+                className="nav-link dark:text-gray-300 dark:hover:text-secondary"
               >
                 Analytics
               </Link>
