@@ -1,10 +1,31 @@
+'use client';
+
 import React, { FC } from 'react';
 import dynamic from 'next/dynamic';
 
-// Dynamically import the wallet button to avoid SSR issues
+// We're using dynamic imports with error handling
 const WalletMultiButtonDynamic = dynamic(
-  async () => (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
-  { ssr: false }
+  async () => {
+    try {
+      // Try to import the wallet button
+      return (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton;
+    } catch (e) {
+      // If it fails, return a simple button component
+      return () => (
+        <button className="btn-primary bg-secondary hover:bg-opacity-90 text-white font-semibold py-2 px-6 rounded-full transition-all">
+          Connect Wallet
+        </button>
+      );
+    }
+  },
+  { 
+    ssr: false,
+    loading: () => (
+      <button className="btn-primary">
+        Loading...
+      </button>
+    )
+  }
 );
 
 const WalletButton: FC = () => {

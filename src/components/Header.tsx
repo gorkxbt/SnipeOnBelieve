@@ -1,8 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
-import WalletButton from './WalletButton';
+import dynamic from 'next/dynamic';
+
+// Dynamic import with error boundary fallback
+const WalletButton = dynamic(() => import('./WalletButton'), { 
+  ssr: false,
+  loading: () => <button className="btn-primary">Connect Wallet</button>
+});
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,7 +40,9 @@ const Header = () => {
           
           {/* Connect Wallet Button */}
           <div className="hidden md:block">
-            <WalletButton />
+            <Suspense fallback={<button className="btn-primary">Connect Wallet</button>}>
+              <WalletButton />
+            </Suspense>
           </div>
           
           {/* Mobile Menu Button */}
@@ -83,7 +91,9 @@ const Header = () => {
                 $SOB Token
               </Link>
               <div className="pt-2">
-                <WalletButton />
+                <Suspense fallback={<button className="btn-primary w-full">Connect Wallet</button>}>
+                  <WalletButton />
+                </Suspense>
               </div>
             </div>
           </div>

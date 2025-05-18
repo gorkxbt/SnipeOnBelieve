@@ -1,13 +1,6 @@
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import React from 'react';
-import dynamic from 'next/dynamic';
-
-// Dynamically import the SolanaWalletProvider to avoid SSR issues
-const SolanaWalletProviderDynamic = dynamic(
-  () => import('@/components/WalletProvider').then(mod => mod.default),
-  { ssr: false }
-);
 
 export const metadata: Metadata = {
   title: 'SnipeOnBelieve | Analytics and Sniping for BelieveApp',
@@ -25,9 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SolanaWalletProviderDynamic>
-          {children}
-        </SolanaWalletProviderDynamic>
+        {children}
       </body>
     </html>
   );
