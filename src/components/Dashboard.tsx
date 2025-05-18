@@ -1009,19 +1009,301 @@ const Dashboard = () => {
             {/* Tab Content - Add proper closing tags */}
             {activeTab === 'newPairs' && (
               <div className="px-6 py-6 overflow-x-auto">
-                {/* New Pairs Content */}
+                {/* New Pairs Feed Content */}
+                <div className="bg-gray-50 dark:bg-dark-surface/30 p-4 rounded-lg mb-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-bold text-lg text-dark dark:text-white">Recent Pairs from BelieveApp</h3>
+                    <div className="text-sm text-secondary">Live updating</div>
+                  </div>
+                  
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-border">
+                      <thead className="bg-gray-100 dark:bg-dark-surface/50">
+                        <tr>
+                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Token</th>
+                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pool Size</th>
+                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Created</th>
+                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Source</th>
+                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white dark:bg-dark-surface divide-y divide-gray-200 dark:divide-dark-border">
+                        {[
+                          { token: '$SOLAR', ticker: 'SOLAR', poolSize: '124 SOL', created: '2 minutes ago', source: 'BelieveApp', logo: '🌞' },
+                          { token: '$BELIEVE', ticker: 'BLV', poolSize: '245 SOL', created: '15 minutes ago', source: 'BelieveApp', logo: '🚀' },
+                          { token: '$SNIPE', ticker: 'SNP', poolSize: '78 SOL', created: '32 minutes ago', source: 'BelieveApp', logo: '🎯' },
+                          { token: '$MEGA', ticker: 'MEGA', poolSize: '190 SOL', created: '48 minutes ago', source: 'BelieveApp', logo: '💎' },
+                          { token: '$PULSE', ticker: 'PLS', poolSize: '56 SOL', created: '1 hour ago', source: 'BelieveApp', logo: '💓' }
+                        ].map((item, i) => (
+                          <tr key={i} className="hover:bg-gray-50 dark:hover:bg-dark-surface/50 transition-colors">
+                            <td className="px-4 py-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <div className="flex-shrink-0 h-10 w-10 bg-secondary/10 rounded-full flex items-center justify-center text-lg">
+                                  {item.logo}
+                                </div>
+                                <div className="ml-4">
+                                  <div className="text-sm font-medium text-dark dark:text-white">{item.token}</div>
+                                  <div className="text-sm text-gray-500 dark:text-gray-400">{item.ticker}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{item.poolSize}</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{item.created}</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{item.source}</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                              <button
+                                onClick={() => handleSnipeToken(item.token)}
+                                className="text-secondary hover:text-secondary-dark transition-colors px-3 py-1 rounded-md border border-secondary hover:bg-secondary hover:text-white"
+                              >
+                                Snipe
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             )}
             
             {activeTab === 'active' && (
               <div className="px-6 py-6">
-                {/* Active Content */}
+                {/* Active Snipes Content */}
+                <div className="mb-4">
+                  <h3 className="font-bold text-lg text-dark dark:text-white mb-4">Active Snipe Operations</h3>
+                  
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-border">
+                      <thead className="bg-gray-100 dark:bg-dark-surface/50">
+                        <tr>
+                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Target</th>
+                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
+                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Amount/Slippage</th>
+                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Created</th>
+                          <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white dark:bg-dark-surface divide-y divide-gray-200 dark:divide-dark-border">
+                        {activeSnipes.map((snipe, i) => (
+                          <tr key={i} className="hover:bg-gray-50 dark:hover:bg-dark-surface/50 transition-colors">
+                            <td className="px-4 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-dark dark:text-white">{snipe.target}</div>
+                            </td>
+                            <td className="px-4 py-4 whitespace-nowrap">
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                snipe.type === 'X Account' 
+                                  ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' 
+                                  : 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
+                              }`}>
+                                {snipe.type}
+                              </span>
+                            </td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                              {snipe.amount} / {snipe.slippage}
+                            </td>
+                            <td className="px-4 py-4 whitespace-nowrap">
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                snipe.status === 'Monitoring' 
+                                  ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' 
+                                  : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                              }`}>
+                                {snipe.status}
+                              </span>
+                            </td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{snipe.created}</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                              <button
+                                onClick={() => handleCancelSnipe(snipe.target)}
+                                className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                              >
+                                Cancel
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             )}
             
             {activeTab === 'sniper' && (
               <div className="px-6 py-6" data-section="sniper">
-                {/* Sniper Content */}
+                {/* Sniper Configuration Content */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                    <h3 className="font-bold text-lg text-dark dark:text-white mb-4">X Account Monitoring</h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                      Monitor an X (Twitter) account for new token mentions and automatically snipe when detected
+                    </p>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">X Account</label>
+                        <div className="mt-1 relative rounded-md shadow-sm">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span className="text-gray-500 sm:text-sm">@</span>
+                          </div>
+                          <input
+                            type="text"
+                            value={xAccountValue}
+                            onChange={(e) => setXAccountValue(e.target.value)}
+                            className="focus:ring-secondary focus:border-secondary block w-full pl-7 sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-3 border dark:bg-dark-surface dark:text-white"
+                            placeholder="BelieveDevs"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Amount (SOL)</label>
+                          <input
+                            type="number"
+                            min="0.01"
+                            step="0.01"
+                            value={snipeAmount}
+                            onChange={(e) => setSnipeAmount(e.target.value)}
+                            className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-3 border dark:bg-dark-surface dark:text-white"
+                            placeholder="0.1"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Slippage (%)</label>
+                          <input
+                            type="number"
+                            min="0.1"
+                            step="0.1"
+                            value={slippageTolerance}
+                            onChange={(e) => setSlippageTolerance(e.target.value)}
+                            className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-3 border dark:bg-dark-surface dark:text-white"
+                            placeholder="2.5"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Priority</label>
+                        <select
+                          value={priority}
+                          onChange={(e) => setPriority(e.target.value)}
+                          className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-3 border dark:bg-dark-surface dark:text-white"
+                        >
+                          <option value="Low">Low</option>
+                          <option value="Medium">Medium</option>
+                          <option value="High">High</option>
+                        </select>
+                      </div>
+                      
+                      <button
+                        onClick={handleEnableMonitoring}
+                        disabled={!xAccountValue || isSnipeEnabled}
+                        className={`w-full font-medium py-3 px-4 rounded-md transition-all flex items-center justify-center ${
+                          isSnipeEnabled 
+                            ? 'bg-green-500 text-white cursor-not-allowed' 
+                            : 'bg-secondary hover:bg-secondary-dark text-white'
+                        }`}
+                      >
+                        {isSnipeEnabled ? 'Monitoring Enabled' : 'Enable X Account Monitoring'}
+                      </button>
+                      
+                      {snipeFeedback && (
+                        <div className="text-sm text-green-600 dark:text-green-400 mt-2">
+                          {snipeFeedback}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                    <h3 className="font-bold text-lg text-dark dark:text-white mb-4">Direct Token Snipe</h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                      Directly snipe a specific token when it appears on BelieveApp
+                    </p>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Token Ticker/Name</label>
+                        <div className="mt-1 relative rounded-md shadow-sm">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span className="text-gray-500 sm:text-sm">$</span>
+                          </div>
+                          <input
+                            type="text"
+                            value={tokenTickerValue}
+                            onChange={(e) => setTokenTickerValue(e.target.value)}
+                            className="focus:ring-secondary focus:border-secondary block w-full pl-7 sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-3 border dark:bg-dark-surface dark:text-white"
+                            placeholder="BELIEVE"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Amount (SOL)</label>
+                          <input
+                            type="number"
+                            min="0.01"
+                            step="0.01"
+                            value={directSnipeAmount}
+                            onChange={(e) => setDirectSnipeAmount(e.target.value)}
+                            className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-3 border dark:bg-dark-surface dark:text-white"
+                            placeholder="0.1"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Slippage (%)</label>
+                          <input
+                            type="number"
+                            min="0.1"
+                            step="0.1"
+                            value={directSnipeSlippage}
+                            onChange={(e) => setDirectSnipeSlippage(e.target.value)}
+                            className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-3 border dark:bg-dark-surface dark:text-white"
+                            placeholder="2.5"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Gas Optimization</label>
+                        <input
+                          type="range"
+                          min="1"
+                          max="5"
+                          value={gasOptimization}
+                          onChange={(e) => setGasOptimization(parseInt(e.target.value))}
+                          className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-secondary"
+                        />
+                        <div className="flex justify-between text-xs text-gray-500 mt-1">
+                          <span>Fastest</span>
+                          <span>Balanced</span>
+                          <span>Cheapest</span>
+                        </div>
+                      </div>
+                      
+                      <button
+                        onClick={handleSetDirectSnipe}
+                        disabled={!tokenTickerValue || isDirectSnipeSet}
+                        className={`w-full font-medium py-3 px-4 rounded-md transition-all flex items-center justify-center ${
+                          isDirectSnipeSet 
+                            ? 'bg-purple-500 text-white cursor-not-allowed' 
+                            : 'bg-secondary hover:bg-secondary-dark text-white'
+                        }`}
+                      >
+                        {isDirectSnipeSet ? 'Direct Snipe Set' : 'Set Direct Token Snipe'}
+                      </button>
+                      
+                      {monitoringFeedback && (
+                        <div className="text-sm text-purple-600 dark:text-purple-400 mt-2">
+                          {monitoringFeedback}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
             

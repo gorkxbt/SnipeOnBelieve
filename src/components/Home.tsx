@@ -173,8 +173,8 @@ const Home = () => {
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            {/* Connecting line - adjusted to be centered vertically with the step numbers */}
-            <div className="hidden md:block absolute top-8 left-0 right-0 h-0.5 bg-secondary z-0" style={{ width: '70%', margin: '0 auto' }}></div>
+            {/* Connecting line - positioned below the step numbers instead of cutting through them */}
+            <div className="hidden md:block absolute top-28 left-0 right-0 h-0.5 bg-secondary z-0" style={{ width: '70%', margin: '0 auto' }}></div>
             
             {/* Steps with staggered animation and better alignment */}
             {[
