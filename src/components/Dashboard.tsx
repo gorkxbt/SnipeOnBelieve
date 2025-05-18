@@ -580,751 +580,456 @@ const Dashboard = () => {
     }
   }, [sniperWallet?.publicKey, connection]);
 
+  // Function to properly connect to Phantom wallet
+  const connectPhantomWallet = async () => {
+    try {
+      if (typeof window !== 'undefined' && window.solana) {
+        // Check if Phantom is installed
+        const isPhantomInstalled = window.solana && window.solana.isPhantom;
+        
+        if (isPhantomInstalled) {
+          // Direct connection to Phantom
+          try {
+            const response = await window.solana.connect();
+            console.log("Connected to Phantom wallet:", response.publicKey.toString());
+            
+            // Force a page refresh to update wallet state
+            setTimeout(() => {
+              window.location.reload();
+            }, 500);
+          } catch (err) {
+            console.error("Connection error:", err);
+            // Try alternative connect method if the first fails
+            try {
+              await window.solana.connect({ onlyIfTrusted: false });
+            } catch (finalErr) {
+              console.error("Final connection error:", finalErr);
+              alert("Could not connect to Phantom wallet. Please make sure it's unlocked and try again.");
+            }
+          }
+        } else {
+          alert("Phantom wallet is not installed. Please install it from https://phantom.app/");
+          window.open("https://phantom.app/", "_blank");
+        }
+      } else {
+        alert("Phantom wallet extension not detected. Please install it from https://phantom.app/");
+        window.open("https://phantom.app/", "_blank");
+      }
+    } catch (error) {
+      console.error("Error connecting to Phantom wallet:", error);
+      alert("Failed to connect to Phantom wallet. Please try again.");
+    }
+  };
+
   return (
-    <section id="dashboard" className="py-24 bg-light dark:bg-dark-bg">
+    <section id="dashboard" className="py-24 bg-gray-50 dark:bg-dark-bg min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Sniper Wallet Section */}
+        {/* Sniper Wallet Section - Improved Design */}
         <div className="mb-16">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-dark dark:text-white">
-              Sniper Wallet
+              <span className="relative inline-block">
+                Sniper Wallet
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-secondary rounded-full"></div>
+              </span>
             </h2>
             <p className="mt-3 text-gray-600 dark:text-gray-400">
-              Manage your dedicated sniper wallet for automated trading
+              Manage your dedicated sniper wallet for automated token sniping
             </p>
           </div>
 
-          <div className="bg-white dark:bg-dark-surface rounded-xl p-8 shadow-lg border border-gray-100 dark:border-dark-border">
-            {!sniperWallet ? (
-              <div className="text-center">
+          {!wallet.connected ? (
+            <div className="bg-white dark:bg-dark-surface rounded-xl p-8 shadow-lg border border-gray-100 dark:border-dark-border">
+              <div className="text-center max-w-xl mx-auto">
+                <div className="mb-6 bg-secondary/10 rounded-full p-5 w-20 h-20 mx-auto flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-dark dark:text-white mb-3">Connect Your Wallet</h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Generate a dedicated wallet for automated sniping operations
+                  Connect your Phantom wallet to generate a secure sniper wallet for automated trading operations
                 </p>
-                <button
-                  className="btn-primary"
-                  onClick={generateSniperWallet}
-                  disabled={isGeneratingWallet || !wallet.connected}
+                <button 
+                  className="btn-primary bg-secondary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-full transition-all flex items-center mx-auto"
+                  onClick={connectPhantomWallet}
                 >
-                  {isGeneratingWallet ? 'Generating...' : 'Generate Sniper Wallet'}
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
+                  Connect Phantom Wallet
                 </button>
-                {walletError && (
-                  <p className="mt-4 text-red-500 dark:text-red-400">{walletError}</p>
-                )}
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-gray-50 dark:bg-dark-surface/60 rounded-lg p-6">
-                  <h3 className="font-bold text-dark dark:text-white mb-4">Wallet Information</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">Public Key</label>
-                      <div className="bg-white dark:bg-dark-surface p-3 rounded-md border border-gray-200 dark:border-dark-border break-all">
-                        {sniperWallet.publicKey}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">Balance</label>
-                      <div className="text-2xl font-bold text-dark dark:text-white">
-                        {sniperWallet.balance.toFixed(4)} SOL
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  <div className="bg-gray-50 dark:bg-dark-surface/60 rounded-lg p-6">
-                    <h3 className="font-bold text-dark dark:text-white mb-4">Deposit SOL</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">Amount (SOL)</label>
-                        <input
-                          type="number"
-                          min="0.01"
-                          step="0.01"
-                          value={depositAmount}
-                          onChange={(e) => setDepositAmount(e.target.value)}
-                          className="w-full p-2 rounded-md border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-surface"
-                          placeholder="0.00"
-                        />
-                      </div>
-                      <button
-                        className="btn-primary w-full"
-                        onClick={handleDeposit}
-                        disabled={isProcessing || !depositAmount}
-                      >
-                        {isProcessing ? 'Processing...' : 'Deposit'}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="bg-gray-50 dark:bg-dark-surface/60 rounded-lg p-6">
-                    <h3 className="font-bold text-dark dark:text-white mb-4">Withdraw SOL</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1">Amount (SOL)</label>
-                        <input
-                          type="number"
-                          min="0.01"
-                          step="0.01"
-                          value={withdrawAmount}
-                          onChange={(e) => setWithdrawAmount(e.target.value)}
-                          className="w-full p-2 rounded-md border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-surface"
-                          placeholder="0.00"
-                        />
-                      </div>
-                      <button
-                        className="btn-primary w-full"
-                        onClick={handleWithdraw}
-                        disabled={isProcessing || !withdrawAmount}
-                      >
-                        {isProcessing ? 'Processing...' : 'Withdraw'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-dark dark:text-white">
-            BelieveApp Sniper Dashboard
-          </h2>
-          <p className="mt-3 text-gray-600 dark:text-gray-400">
-            Advanced token sniping for new Meteora pools on BelieveApp
-          </p>
-        </div>
-        
-        {/* Optional Wallet Connection Section */}
-        {!wallet.connected && (
-          <div className="bg-white dark:bg-dark-surface rounded-xl p-6 mb-8 shadow-sm border border-gray-100 dark:border-dark-border">
-            <div className="flex flex-col md:flex-row items-center justify-between">
-              <div>
-                <h3 className="text-xl font-bold text-dark dark:text-white">Connect Your Wallet</h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Connect your wallet to enable token sniping features
-                </p>
-              </div>
-              <button 
-                className="btn-primary bg-secondary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-full transition-all flex items-center mt-4 md:mt-0"
-                onClick={async () => {
-                  try {
-                    if (window.solana && window.solana.isPhantom) {
-                      // Direct connection to Phantom if it's available
-                      console.log('Connecting directly to Phantom wallet');
-                      await window.solana.connect({ onlyIfTrusted: false });
-                      
-                      // Refresh the page after connection to ensure wallet state is updated
-                      setTimeout(() => {
-                        window.location.reload();
-                      }, 500);
-                    } else {
-                      // Fallback to button clicking
-                      console.log('Phantom not detected, trying wallet adapter');
-                      const walletBtn = document.querySelector('.wallet-adapter-button-trigger');
-                      if (walletBtn && walletBtn instanceof HTMLElement) {
-                        walletBtn.click();
-                      } else {
-                        console.error('No wallet adapter button found');
-                        alert('Please install Phantom wallet from https://phantom.app/');
-                      }
-                    }
-                  } catch (error) {
-                    console.error("Error connecting wallet:", error);
-                    alert('Please install Phantom wallet from https://phantom.app/');
-                  }
-                }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </div>
+          ) : (
+            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 md:p-8 shadow-lg border border-gray-100 dark:border-dark-border overflow-hidden relative">
+              {/* Background pattern */}
+              <div className="absolute top-0 right-0 w-40 h-40 opacity-5 transform rotate-45">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
                 </svg>
-                Connect
-              </button>
-            </div>
-          </div>
-        )}
-        
-        {/* Live Status - Always visible */}
-        <div className="bg-white dark:bg-dark-surface rounded-xl p-3 shadow-sm border border-gray-100 dark:border-dark-border mb-8 flex items-center justify-between">
-          <div className="flex items-center">
-            <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-            <span className="text-gray-600 dark:text-gray-400 text-sm">Live - Last scan: {wallet.connected ? lastScan : new Date().toLocaleTimeString()}</span>
-          </div>
-          <div className="text-gray-600 dark:text-gray-400 text-sm">
-            Watching Meteora pools on BelieveApp
-          </div>
-        </div>
-        
-        {/* Dashboard Stats - Always visible */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-dark dark:text-white">Currently Sniping</h3>
-              <span className="text-secondary text-2xl font-bold">{wallet.connected ? currentlySnipingCount : '0'}</span>
-            </div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Active monitoring jobs</p>
-          </div>
-          <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-dark dark:text-white">Success Rate</h3>
-              <div className="text-right">
-                <span className="text-secondary text-2xl font-bold">{wallet.connected ? snipeSuccess.rate : '0%'}</span>
-                <span className="text-gray-500 dark:text-gray-400 text-sm ml-2">({wallet.connected ? snipeSuccess.count : '0'} snipes)</span>
-              </div>
-            </div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Last 7 days performance</p>
-          </div>
-          <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-dark dark:text-white">Tokens Monitored</h3>
-              <span className="text-secondary text-2xl font-bold">{wallet.connected ? coinsMonitored : '--'}</span>
-            </div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">From BelieveApp in last 24h</p>
-          </div>
-          <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-dark dark:text-white">Total Profit</h3>
-              <span className="text-secondary text-2xl font-bold">{wallet.connected ? totalProfit : '--'}</span>
-            </div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Cumulative trader profit</p>
-          </div>
-        </div>
-        
-        <div className="bg-white dark:bg-dark-surface rounded-xl shadow-sm border border-gray-100 dark:border-dark-border overflow-hidden">
-          <div className="flex border-b border-gray-200 dark:border-dark-border">
-            <button
-              className={`px-6 py-3 font-medium ${
-                activeTab === 'newPairs'
-                  ? 'text-secondary border-b-2 border-secondary'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-              }`}
-              onClick={() => setActiveTab('newPairs')}
-            >
-              New Pairs Feed
-            </button>
-            <button
-              className={`px-6 py-3 font-medium ${
-                activeTab === 'active'
-                  ? 'text-secondary border-b-2 border-secondary'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-              }`}
-              onClick={() => setActiveTab('active')}
-            >
-              Current Snipes
-            </button>
-            <button
-              className={`px-6 py-3 font-medium ${
-                activeTab === 'sniper'
-                  ? 'text-secondary border-b-2 border-secondary'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-              }`}
-              onClick={() => setActiveTab('sniper')}
-            >
-              Configure Sniper
-            </button>
-            <button
-              className={`px-6 py-3 font-medium ${
-                activeTab === 'graduated'
-                  ? 'text-secondary border-b-2 border-secondary'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-              }`}
-              onClick={() => setActiveTab('graduated')}
-            >
-              Graduated Coins
-            </button>
-          </div>
-          
-          {activeTab === 'newPairs' && (
-            <div className="px-6 py-6 overflow-x-auto">
-              <div className="mb-6 grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div className="bg-gray-50 dark:bg-dark-surface/60 rounded-lg p-3">
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Market Cap</label>
-                  <select className="bg-white dark:bg-dark-surface border border-gray-300 dark:border-dark-border rounded w-full p-2 text-sm dark:text-white">
-                    <option>Any Market Cap</option>
-                    <option>$0 - $100K</option>
-                    <option>$100K - $500K</option>
-                    <option>$500K - $1M</option>
-                    <option>$1M+</option>
-                  </select>
-                </div>
-                <div className="bg-gray-50 dark:bg-dark-surface/60 rounded-lg p-3">
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Contract Age</label>
-                  <select className="bg-white dark:bg-dark-surface border border-gray-300 dark:border-dark-border rounded w-full p-2 text-sm dark:text-white">
-                    <option>Any Age</option>
-                    <option>Less than 1 hour</option>
-                    <option>Less than 24 hours</option>
-                    <option>Less than 7 days</option>
-                  </select>
-                </div>
-                <div className="bg-gray-50 dark:bg-dark-surface/60 rounded-lg p-3">
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Holders</label>
-                  <select className="bg-white dark:bg-dark-surface border border-gray-300 dark:border-dark-border rounded w-full p-2 text-sm dark:text-white">
-                    <option>Any Holders</option>
-                    <option>Less than 100</option>
-                    <option>100 - 500</option>
-                    <option>500 - 1,000</option>
-                    <option>1,000+</option>
-                  </select>
-                </div>
               </div>
               
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="text-left border-b border-gray-200 dark:border-dark-border">
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Token</th>
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Market Cap</th>
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Liquidity</th>
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Pair Created</th>
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Contract Age</th>
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Holders</th>
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tokens.map((token, index) => (
-                      <tr key={index} className="border-b border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:hover:bg-dark-surface/80 transition-colors">
-                        <td className="py-4">
+              {!sniperWallet ? (
+                <div className="text-center max-w-xl mx-auto">
+                  <div className="mb-6 bg-secondary/10 rounded-full p-5 w-20 h-20 mx-auto flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-dark dark:text-white mb-4">Generate Your Sniper Wallet</h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-6">
+                    Create a dedicated wallet for automated sniping operations. All your trades will be executed from this wallet.
+                  </p>
+                  <button
+                    className="btn-primary bg-secondary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-full transition-all flex items-center mx-auto transform hover:scale-105"
+                    onClick={generateSniperWallet}
+                    disabled={isGeneratingWallet}
+                  >
+                    {isGeneratingWallet ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+                        </svg>
+                        Generate Sniper Wallet
+                      </>
+                    )}
+                  </button>
+                  {walletError && (
+                    <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm">
+                      <div className="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {walletError}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="bg-gradient-to-br from-gray-50 to-white dark:from-dark-surface/60 dark:to-dark-surface/40 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border/50 transform transition-all duration-300 hover:shadow-md">
+                    <div className="flex items-center mb-4">
+                      <div className="bg-secondary/20 p-2 rounded-lg mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                      </div>
+                      <h3 className="font-bold text-dark dark:text-white text-xl">Sniper Wallet Info</h3>
+                    </div>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1 font-medium">Public Key</label>
+                        <div className="bg-white dark:bg-dark-surface p-3 rounded-md border border-gray-200 dark:border-dark-border/50 break-all text-sm text-gray-700 dark:text-gray-300 font-mono">
+                          {sniperWallet.publicKey}
+                        </div>
+                        <button 
+                          className="mt-1 text-xs text-secondary hover:text-secondary/80 flex items-center"
+                          onClick={() => {
+                            navigator.clipboard.writeText(sniperWallet.publicKey);
+                            alert('Public key copied to clipboard');
+                          }}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                          Copy address
+                        </button>
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-500 dark:text-gray-400 mb-1 font-medium">Balance</label>
+                        <div className="bg-gradient-to-r from-secondary/10 to-transparent p-4 rounded-lg">
                           <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-secondary/20 mr-3 flex items-center justify-center text-xs">
-                              {token.ticker.substring(1, 3)}
+                            <div className="w-10 h-10 rounded-full bg-[#9945FF]/20 mr-3 flex items-center justify-center text-xs text-[#9945FF] font-medium">
+                              SOL
                             </div>
                             <div>
-                              <div className="font-medium text-dark dark:text-white">{token.name}</div>
-                              <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                {token.ticker} 
-                                <span className="ml-2 px-1.5 py-0.5 text-[10px] bg-secondary/10 text-secondary rounded-full">Meteora</span>
+                              <div className="text-3xl font-bold text-dark dark:text-white">
+                                {sniperWallet.balance.toFixed(4)} SOL
                               </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-4 text-dark dark:text-white">{token.marketCap}</td>
-                        <td className="py-4 text-dark dark:text-white">{token.liquidity}</td>
-                        <td className="py-4 text-dark dark:text-white">{token.pairCreated}</td>
-                        <td className="py-4 text-dark dark:text-white">{token.contractAge}</td>
-                        <td className="py-4 text-dark dark:text-white">{token.holders}</td>
-                        <td className="py-4">
-                          <button 
-                            className="bg-secondary text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-all"
-                            onClick={() => handleSnipeToken(token.name)}
-                          >
-                            Snipe
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="mt-4 text-right">
-                  <button className="text-secondary text-sm font-medium hover:underline">
-                    Load More Tokens
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {activeTab === 'graduated' && (
-            <div className="px-6 py-6 overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-left border-b border-gray-200 dark:border-dark-border">
-                    <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Token</th>
-                    <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Price</th>
-                    <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">24h Change</th>
-                    <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Market Cap</th>
-                    <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">24h Volume</th>
-                    <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Transactions</th>
-                    <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {graduated.map((token, index) => (
-                    <tr key={index} className="border-b border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:hover:bg-dark-surface/80 transition-colors">
-                      <td className="py-4">
-                        <div className="flex items-center">
-                          <div className="w-8 h-8 rounded-full bg-secondary/20 mr-3 flex items-center justify-center text-xs">
-                            {token.ticker.substring(1, 3)}
-                          </div>
-                          <div>
-                            <div className="font-medium text-dark dark:text-white">{token.name}</div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                              {token.ticker}
-                              <span className="ml-2 px-1.5 py-0.5 text-[10px] bg-secondary/10 text-secondary rounded-full">Meteora</span>
+                              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                Last updated: {new Date().toLocaleTimeString()}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </td>
-                      <td className="py-4 text-dark dark:text-white">{token.price}</td>
-                      <td className="py-4">
-                        <span className={token.change.startsWith('+') ? 'text-green-500' : 'text-red-500'}>
-                          {token.change}
-                        </span>
-                      </td>
-                      <td className="py-4 text-dark dark:text-white">{token.marketCap}</td>
-                      <td className="py-4 text-dark dark:text-white">{token.volume}</td>
-                      <td className="py-4 text-dark dark:text-white">{token.txCount}</td>
-                      <td className="py-4">
-                        <a 
-                          href={`https://app.meteora.ag/swap?inputMint=So11111111111111111111111111111111111111112&outputMint=${token.ticker.substring(1)}`} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="bg-secondary text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-all"
-                        >
-                          Trade
-                        </a>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-          
-          {activeTab === 'sniper' && (
-            <div className="px-6 py-6" data-section="sniper">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-gray-50 dark:bg-dark-surface/60 rounded-lg p-6">
-                  <h3 className="font-bold text-dark dark:text-white mb-4">X Account Monitoring</h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">Enter the handle of any X (Twitter) account. We will monitor this account for token deployment announcements from BelieveApp.</p>
-                  
-                  {monitoringFeedback && (
-                    <div className={`p-3 mb-4 rounded-md ${isSnipeEnabled ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
-                      {monitoringFeedback}
-                    </div>
-                  )}
-                  
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">X Account Handle</label>
-                    <div className="mt-1 relative rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <span className="text-gray-500 sm:text-sm">@</span>
                       </div>
-                      <input 
-                        type="text" 
-                        className="focus:ring-secondary focus:border-secondary block w-full pl-7 pr-12 sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" 
-                        placeholder="solanaproject" 
-                        value={xAccountValue}
-                        onChange={(e) => setXAccountValue(e.target.value)}
-                      />
+                      
+                      <div className="mt-4">
+                        <div className="flex items-center mb-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-secondary mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">Security Info</span>
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          This wallet's private key is encrypted and stored locally. Never share your private key with anyone.
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount to Snipe (SOL)</label>
-                    <input 
-                      type="number" 
-                      min="0.01" 
-                      step="0.01" 
-                      className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" 
-                      placeholder="0.1" 
-                      value={snipeAmount}
-                      onChange={(e) => setSnipeAmount(e.target.value)}
-                    />
-                  </div>
-                  
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slippage Tolerance (%)</label>
-                    <input 
-                      type="number" 
-                      min="0.1" 
-                      max="100" 
-                      step="0.1" 
-                      className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" 
-                      placeholder="2.5" 
-                      value={slippageTolerance}
-                      onChange={(e) => setSlippageTolerance(e.target.value)}
-                    />
-                  </div>
-                  
-                  <div className="mb-6">
-                    <div className="flex items-center">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
-                      <div className="ml-auto text-xs text-secondary">Meteora Pool</div>
+
+                  <div className="space-y-6">
+                    <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border transform transition-all duration-300 hover:shadow-md">
+                      <div className="flex items-center mb-4">
+                        <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-lg mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                          </svg>
+                        </div>
+                        <h3 className="font-bold text-dark dark:text-white text-xl">Deposit SOL</h3>
+                      </div>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Amount (SOL)</label>
+                          <div className="mt-1 relative rounded-md shadow-sm">
+                            <input
+                              type="number"
+                              min="0.01"
+                              step="0.01"
+                              value={depositAmount}
+                              onChange={(e) => setDepositAmount(e.target.value)}
+                              className="focus:ring-secondary focus:border-secondary block w-full pl-3 pr-12 sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-3 border dark:bg-dark-surface dark:text-white"
+                              placeholder="0.00"
+                            />
+                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                              <span className="text-gray-500 sm:text-sm">SOL</span>
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-md transition-all flex items-center justify-center"
+                          onClick={handleDeposit}
+                          disabled={isProcessing || !depositAmount}
+                        >
+                          {isProcessing ? (
+                            <>
+                              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                              Processing Deposit...
+                            </>
+                          ) : (
+                            <>Deposit to Sniper Wallet</>
+                          )}
+                        </button>
+                      </div>
                     </div>
-                    <select 
-                      className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white"
-                      value={priority}
-                      onChange={(e) => setPriority(e.target.value)}
-                    >
-                      <option>Medium</option>
-                      <option>High</option>
-                      <option>Low</option>
-                    </select>
-                  </div>
-                  
-                  <button 
-                    className={`w-full ${isSnipeEnabled ? 'bg-gray-400 dark:bg-gray-700 cursor-not-allowed' : 'btn-primary'}`}
-                    onClick={handleEnableMonitoring}
-                    disabled={isSnipeEnabled}
-                  >
-                    {isSnipeEnabled ? 'Monitoring Enabled' : 'Enable Monitoring'}
-                  </button>
-                </div>
-                
-                <div className="bg-gray-50 dark:bg-dark-surface/60 rounded-lg p-6">
-                  <h3 className="font-bold text-dark dark:text-white mb-4">Direct Snipe by Ticker or Name</h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">If you know the $ticker or name of an upcoming BelieveApp Meteora pool, set up a snipe in advance.</p>
-                  
-                  {snipeFeedback && (
-                    <div className={`p-3 mb-4 rounded-md ${isDirectSnipeSet ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
-                      {snipeFeedback}
+
+                    <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border transform transition-all duration-300 hover:shadow-md">
+                      <div className="flex items-center mb-4">
+                        <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-lg mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                        </div>
+                        <h3 className="font-bold text-dark dark:text-white text-xl">Withdraw SOL</h3>
+                      </div>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1 font-medium">Amount (SOL)</label>
+                          <div className="mt-1 relative rounded-md shadow-sm">
+                            <input
+                              type="number"
+                              min="0.01"
+                              step="0.01"
+                              max={sniperWallet.balance}
+                              value={withdrawAmount}
+                              onChange={(e) => setWithdrawAmount(e.target.value)}
+                              className="focus:ring-secondary focus:border-secondary block w-full pl-3 pr-12 sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-3 border dark:bg-dark-surface dark:text-white"
+                              placeholder="0.00"
+                            />
+                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                              <span className="text-gray-500 sm:text-sm">SOL</span>
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-md transition-all flex items-center justify-center"
+                          onClick={handleWithdraw}
+                          disabled={isProcessing || !withdrawAmount || Number(withdrawAmount) > sniperWallet.balance}
+                        >
+                          {isProcessing ? (
+                            <>
+                              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                              Processing Withdrawal...
+                            </>
+                          ) : (
+                            <>Withdraw to Connected Wallet</>
+                          )}
+                        </button>
+                      </div>
                     </div>
-                  )}
-                  
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Token Ticker or Name</label>
-                    <input 
-                      type="text" 
-                      className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" 
-                      placeholder="$EXAMPLE" 
-                      value={tokenTickerValue}
-                      onChange={(e) => setTokenTickerValue(e.target.value)}
-                    />
                   </div>
-                  
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount to Snipe (SOL)</label>
-                    <input 
-                      type="number" 
-                      min="0.01" 
-                      step="0.01" 
-                      className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" 
-                      placeholder="0.1" 
-                      value={directSnipeAmount}
-                      onChange={(e) => setDirectSnipeAmount(e.target.value)}
-                    />
-                  </div>
-                  
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slippage Tolerance (%)</label>
-                    <input 
-                      type="number" 
-                      min="0.1" 
-                      max="100" 
-                      step="0.1" 
-                      className="focus:ring-secondary focus:border-secondary block w-full sm:text-sm border-gray-300 dark:border-dark-border rounded-md py-2 border dark:bg-dark-surface dark:text-white" 
-                      placeholder="2.5" 
-                      value={directSnipeSlippage}
-                      onChange={(e) => setDirectSnipeSlippage(e.target.value)}
-                    />
-                  </div>
-                  
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Gas Optimization</label>
-                    <div className="mt-1 flex items-center space-x-4">
-                      <span className="text-sm text-gray-700 dark:text-gray-300">Lower</span>
-                      <input 
-                        type="range" 
-                        min="1" 
-                        max="5" 
-                        value={gasOptimization} 
-                        onChange={(e) => setGasOptimization(parseInt(e.target.value))}
-                        className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer" 
-                      />
-                      <span className="text-sm text-gray-700 dark:text-gray-300">Higher</span>
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Higher gas ensures faster transaction execution</p>
-                  </div>
-                  
-                  <button 
-                    className={`w-full ${isDirectSnipeSet ? 'bg-gray-400 dark:bg-gray-700 cursor-not-allowed' : 'btn-primary'}`}
-                    onClick={handleSetDirectSnipe}
-                    disabled={isDirectSnipeSet}
-                  >
-                    {isDirectSnipeSet ? 'Snipe Set' : 'Set Snipe'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {activeTab === 'active' && (
-            <div className="px-6 py-6">
-              <h3 className="font-bold text-dark dark:text-white mb-4">Active Snipes</h3>
-              
-              {activeSnipes.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="text-left border-b border-gray-200 dark:border-dark-border">
-                        <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Target</th>
-                        <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Type</th>
-                        <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Amount</th>
-                        <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Slippage</th>
-                        <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Priority</th>
-                        <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Status</th>
-                        <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Created</th>
-                        <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {activeSnipes.map((snipe, index) => (
-                        <tr key={index} className="border-b border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:hover:bg-dark-surface/80 transition-colors">
-                          <td className="py-4 text-dark dark:text-white">{snipe.target}</td>
-                          <td className="py-4 text-dark dark:text-white">{snipe.type}</td>
-                          <td className="py-4 text-dark dark:text-white">{snipe.amount}</td>
-                          <td className="py-4 text-dark dark:text-white">{snipe.slippage}</td>
-                          <td className="py-4">
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              snipe.priority === 'High' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' : 
-                              snipe.priority === 'Medium' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' : 
-                              'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
-                            }`}>
-                              {snipe.priority}
-                            </span>
-                          </td>
-                          <td className="py-4">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary bg-opacity-10 text-secondary">
-                              {snipe.status}
-                            </span>
-                          </td>
-                          <td className="py-4 text-gray-500 dark:text-gray-400 text-sm">{snipe.created}</td>
-                          <td className="py-4">
-                            <button 
-                              className="text-red-500 hover:text-red-700 dark:hover:text-red-400 text-xs font-medium"
-                              onClick={() => handleCancelSnipe(snipe.target)}
-                            >
-                              Cancel
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className="bg-gray-50 dark:bg-dark-surface/60 p-8 rounded-lg text-center">
-                  <p className="text-gray-500 dark:text-gray-400">No active snipes. Configure a snipe to get started.</p>
-                  <button 
-                    className="mt-4 btn-primary"
-                    onClick={() => setActiveTab('sniper')}
-                  >
-                    Configure Sniper
-                  </button>
                 </div>
               )}
             </div>
           )}
         </div>
 
-        {/* User Dashboard */}
-        <div className="mt-16">
+        {/* Main Dashboard Section - Improved Design */}
+        <div className="mb-16">
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-dark dark:text-white">
-              User Dashboard
+              <span className="relative inline-block">
+                BelieveApp Sniper Dashboard
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-secondary rounded-full"></div>
+              </span>
             </h2>
             <p className="mt-3 text-gray-600 dark:text-gray-400">
-              Manage your positions and track your performance
+              Advanced token sniping for new Meteora pools on BelieveApp
             </p>
           </div>
-
-          {/* User Balances */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
-              <h3 className="text-lg font-bold text-dark dark:text-white mb-2">SOL Balance</h3>
-              <div className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-[#9945FF]/20 mr-3 flex items-center justify-center text-xs text-[#9945FF]">
-                  SOL
+          
+          {/* Optional Wallet Connection Section - Improved */}
+          {!wallet.connected && (
+            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 mb-8 shadow-sm border border-gray-100 dark:border-dark-border">
+              <div className="flex flex-col md:flex-row items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold text-dark dark:text-white">Connect Your Wallet</h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Connect your wallet to enable token sniping features
+                  </p>
                 </div>
-                <span className="text-2xl font-bold text-dark dark:text-white">{userBalances.sol} SOL</span>
-              </div>
-            </div>
-            
-            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
-              <h3 className="text-lg font-bold text-dark dark:text-white mb-2">$SOB Balance</h3>
-              <div className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-secondary/20 mr-3 flex items-center justify-center text-xs text-secondary">
-                  SOB
-                </div>
-                <span className="text-2xl font-bold text-dark dark:text-white">{userBalances.sob} $SOB</span>
-              </div>
-            </div>
-            
-            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
-              <h3 className="text-lg font-bold text-dark dark:text-white mb-2">Total Portfolio Value</h3>
-              <div className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-secondary/20 mr-3 flex items-center justify-center text-xs">
-                  <svg className="h-4 w-4 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <button 
+                  className="btn-primary bg-secondary hover:bg-opacity-90 text-white font-semibold py-3 px-8 rounded-full transition-all flex items-center mt-4 md:mt-0"
+                  onClick={connectPhantomWallet}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
-                </div>
-                <span className="text-2xl font-bold text-dark dark:text-white">
-                  {parseFloat(userBalances.sol) + 2.8} SOL
-                </span>
-                <span className="ml-2 text-green-500 text-sm">
-                  +18.5%
-                </span>
+                  Connect
+                </button>
               </div>
+            </div>
+          )}
+          
+          {/* Live Status - Always visible */}
+          <div className="bg-white dark:bg-dark-surface rounded-xl p-3 shadow-sm border border-gray-100 dark:border-dark-border mb-8 flex items-center justify-between">
+            <div className="flex items-center">
+              <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+              <span className="text-gray-600 dark:text-gray-400 text-sm">Live - Last scan: {wallet.connected ? lastScan : new Date().toLocaleTimeString()}</span>
+            </div>
+            <div className="text-gray-600 dark:text-gray-400 text-sm">
+              Watching Meteora pools on BelieveApp
             </div>
           </div>
-
-          {/* User Token Positions */}
+          
+          {/* Dashboard Stats - Always visible */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-dark dark:text-white">Currently Sniping</h3>
+                <span className="text-secondary text-2xl font-bold">{wallet.connected ? currentlySnipingCount : '0'}</span>
+              </div>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Active monitoring jobs</p>
+            </div>
+            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-dark dark:text-white">Success Rate</h3>
+                <div className="text-right">
+                  <span className="text-secondary text-2xl font-bold">{wallet.connected ? snipeSuccess.rate : '0%'}</span>
+                  <span className="text-gray-500 dark:text-gray-400 text-sm ml-2">({wallet.connected ? snipeSuccess.count : '0'} snipes)</span>
+                </div>
+              </div>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Last 7 days performance</p>
+            </div>
+            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-dark dark:text-white">Tokens Monitored</h3>
+                <span className="text-secondary text-2xl font-bold">{wallet.connected ? coinsMonitored : '--'}</span>
+              </div>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">From BelieveApp in last 24h</p>
+            </div>
+            <div className="bg-white dark:bg-dark-surface rounded-xl p-6 shadow-sm border border-gray-100 dark:border-dark-border">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-dark dark:text-white">Total Profit</h3>
+                <span className="text-secondary text-2xl font-bold">{wallet.connected ? totalProfit : '--'}</span>
+              </div>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Cumulative trader profit</p>
+            </div>
+          </div>
+          
           <div className="bg-white dark:bg-dark-surface rounded-xl shadow-sm border border-gray-100 dark:border-dark-border overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-dark-border">
-              <h3 className="font-bold text-dark dark:text-white">Your Positions</h3>
+            <div className="flex border-b border-gray-200 dark:border-dark-border">
+              <button
+                className={`px-6 py-3 font-medium ${
+                  activeTab === 'newPairs'
+                    ? 'text-secondary border-b-2 border-secondary'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                }`}
+                onClick={() => setActiveTab('newPairs')}
+              >
+                New Pairs Feed
+              </button>
+              <button
+                className={`px-6 py-3 font-medium ${
+                  activeTab === 'active'
+                    ? 'text-secondary border-b-2 border-secondary'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                }`}
+                onClick={() => setActiveTab('active')}
+              >
+                Current Snipes
+              </button>
+              <button
+                className={`px-6 py-3 font-medium ${
+                  activeTab === 'sniper'
+                    ? 'text-secondary border-b-2 border-secondary'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                }`}
+                onClick={() => setActiveTab('sniper')}
+              >
+                Configure Sniper
+              </button>
+              <button
+                className={`px-6 py-3 font-medium ${
+                  activeTab === 'graduated'
+                    ? 'text-secondary border-b-2 border-secondary'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                }`}
+                onClick={() => setActiveTab('graduated')}
+              >
+                Graduated Coins
+              </button>
             </div>
             
-            <div className="px-6 py-6 overflow-x-auto">
-              {userBalances.positions.length > 0 ? (
-                <table className="w-full">
-                  <thead>
-                    <tr className="text-left border-b border-gray-200 dark:border-dark-border">
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Token</th>
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Amount</th>
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Value</th>
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Buy Price</th>
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Current Price</th>
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Profit/Loss</th>
-                      <th className="pb-3 text-gray-500 dark:text-gray-400 font-medium">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {userBalances.positions.map((position, index) => (
-                      <tr key={index} className="border-b border-gray-200 dark:border-dark-border hover:bg-gray-50 dark:hover:bg-dark-surface/80 transition-colors">
-                        <td className="py-4">
-                          <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-secondary/20 mr-3 flex items-center justify-center text-xs">
-                              {position.ticker.substring(1, 3)}
-                            </div>
-                            <div>
-                              <div className="font-medium text-dark dark:text-white">{position.token}</div>
-                              <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                                {position.ticker}
-                                <span className="ml-2 px-1.5 py-0.5 text-[10px] bg-secondary/10 text-secondary rounded-full">Meteora</span>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-4 text-dark dark:text-white">{position.amount}</td>
-                        <td className="py-4 text-dark dark:text-white">{position.value}</td>
-                        <td className="py-4 text-dark dark:text-white">{position.buyPrice}</td>
-                        <td className="py-4 text-dark dark:text-white">{position.currentPrice}</td>
-                        <td className="py-4">
-                          <div className="flex flex-col">
-                            <span className="text-green-500">{position.profit}</span>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">{position.profitValue}</span>
-                          </div>
-                        </td>
-                        <td className="py-4">
-                          <button 
-                            className="bg-secondary text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-all"
-                            onClick={() => handleSellPosition(position.token)}
-                          >
-                            Sell
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500 dark:text-gray-400">No positions yet. Start sniping to build your portfolio!</p>
-                </div>
-              )}
-            </div>
+            {/* Tab Content - Add proper closing tags */}
+            {activeTab === 'newPairs' && (
+              <div className="px-6 py-6 overflow-x-auto">
+                {/* New Pairs Content */}
+              </div>
+            )}
+            
+            {activeTab === 'active' && (
+              <div className="px-6 py-6">
+                {/* Active Content */}
+              </div>
+            )}
+            
+            {activeTab === 'sniper' && (
+              <div className="px-6 py-6" data-section="sniper">
+                {/* Sniper Content */}
+              </div>
+            )}
+            
+            {activeTab === 'graduated' && (
+              <div className="px-6 py-6 overflow-x-auto">
+                {/* Graduated Content */}
+              </div>
+            )}
           </div>
         </div>
       </div>
